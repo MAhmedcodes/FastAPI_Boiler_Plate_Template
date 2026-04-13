@@ -10,20 +10,30 @@ class OAuth2Service:
     def authenticate_user(db: Session, email: str, password: str):
         """Authenticate user with email and password"""
         user_repo = UserRepository(db)
-        user = user_repo.get_by_email(email)
-        
-        if not user:
+    
+        # Check registration method
+        reg_method = user_repo.check_email_registration_method(email)
+    
+        if reg_method == "oauth":
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="This email is registered with Google/GitHub. Please use OAuth login."
+            )
+    
+        if reg_method is None:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Invalid Email or Password"
             )
-        
-        if not utils.verify(password, user.password):
+    
+        user = user_repo.get_by_email(email)
+    
+        if not utils.verify(password, user.password):  # type: ignore
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid Email or Password"
             )
-        
+    
         return user
     
     @staticmethod

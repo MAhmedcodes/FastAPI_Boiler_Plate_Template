@@ -81,3 +81,26 @@ class UserRepository:
         self.db.refresh(user)
         return user
     
+    def check_email_registration_method(self, email: str) -> Optional[str]:
+    #Check which method an email is registered with. Returns 'oauth', 'password', or None
+        user = self.db.query(model.User).filter(
+            model.User.email == email
+        ).first()
+    
+        if not user:
+            return None
+    
+        if user.password is not None:
+            return "password"
+        elif user.oauth_provider is not None:
+            return "oauth"
+    
+        return None
+    
+    def get_by_oauth_and_email(self, provider: str, email: str) -> Optional[model.User]:
+        """Get user by provider and email - ensures same provider"""
+        return self.db.query(model.User).filter(
+            model.User.email == email,
+            model.User.oauth_provider == provider
+        ).first()
+    
