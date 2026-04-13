@@ -1,18 +1,16 @@
-# app/services/auth_service.py
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
-from app.modules.Users.models import model
 from shared.utils import utils
 from app.core.security.OAuth2 import oauth2
+from app.modules.Users.repository.user_repository import UserRepository
 
 class OAuth2Service:
     
     @staticmethod
     def authenticate_user(db: Session, email: str, password: str):
         """Authenticate user with email and password"""
-        user = db.query(model.User).filter(
-            model.User.email == email
-        ).first()
+        user_repo = UserRepository(db)
+        user = user_repo.get_by_email(email)
         
         if not user:
             raise HTTPException(
