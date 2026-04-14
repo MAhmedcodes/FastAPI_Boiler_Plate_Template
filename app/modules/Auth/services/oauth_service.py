@@ -38,7 +38,8 @@ class OAuthService:
         user_repo = UserRepository(db)
 
         # 🔹 Step 1: Check how this email was originally registered
-        reg_method = user_repo.check_email_registration_method(email)
+        reg_method = user_repo.check_email_registration_method(
+            email)  # type: ignore
 
         # ❌ If registered via password → block OAuth login
         if reg_method == "password":
@@ -84,13 +85,14 @@ class OAuthService:
                     db.refresh(user)
 
             else:
-                # ✅ New user → create account
+                # ✅ New user → create account with is_verified=True
                 user = user_repo.create_oauth_user(
                     email=email,
                     first_name=first_name,
                     last_name=last_name,
                     oauth_provider='google',
-                    oauth_id=google_id
+                    oauth_id=google_id,
+                    is_verified=True  # OAuth users are auto-verified
                 )
 
         return user
@@ -167,13 +169,14 @@ class OAuthService:
                     db.refresh(user)
 
             else:
-                # ✅ New user → create account
+                # ✅ New user → create account with is_verified=True
                 user = user_repo.create_oauth_user(
                     email=email,
                     first_name=first_name,
                     last_name=last_name,
                     oauth_provider='github',
-                    oauth_id=github_id
+                    oauth_id=github_id,
+                    is_verified=True  # OAuth users are auto-verified
                 )
 
         return user
