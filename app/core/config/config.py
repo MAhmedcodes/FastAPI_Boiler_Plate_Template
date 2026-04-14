@@ -32,10 +32,9 @@ class Settings(BaseSettings):
     github_client_secret: str
     github_redirect_uri: str = "http://localhost:8000/auth/github/callback"
 
-    SESSION_SECRET_KEY: str
+    #getting the data from env
     class Config:
         env_file = ".env"
-        # extra = "ignore"   # don't crash on unknown .env keys
 
 
 settings = Settings()  # type: ignore

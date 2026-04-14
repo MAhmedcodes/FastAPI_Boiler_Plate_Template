@@ -29,4 +29,17 @@ class UserOut(UserBase):
 class Login(BaseModel):
     email: EmailStr
     password: str
-    
+
+#Registration Response Schema
+class RegisterResponse(BaseModel):
+    access_token: str
+    token_type: str
+    user_id: int
+    email: str
+    first_name: str
+    last_name: str
+    message: str
+
+    class Config:
+        from_attributes = True    
+        
