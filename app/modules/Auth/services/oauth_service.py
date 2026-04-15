@@ -98,6 +98,7 @@ class OAuthService:
                 # Trigger welcome email (async)
                 send_welcome_email_task.delay(  # type: ignore
                     email, first_name)
+            user_repo.update_last_login(user.id)  # type: ignore
 
         return user
 
@@ -185,5 +186,6 @@ class OAuthService:
                 # Trigger welcome email (async)
                 send_welcome_email_task.delay(  # type: ignore
                     email, first_name)
+            user_repo.update_last_login(user.id)  # type: ignore
 
         return user

@@ -17,3 +17,4 @@ class User(Base):
     # ID from Google/GitHub
     oauth_id = Column(String, unique=True, nullable=True)
     is_verified = Column(Boolean, nullable=False, server_default=text('false'))
+    last_login = Column(TIMESTAMP(timezone=True), nullable=True)

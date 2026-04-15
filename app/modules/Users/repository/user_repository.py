@@ -1,6 +1,7 @@
+from datetime import datetime, timedelta, timezone
 from sqlalchemy.orm import Session
 from app.modules.Users.models import model
-from typing import Optional
+from typing import List, Optional
 from shared.utils import utils
 
 
@@ -117,3 +118,18 @@ class UserRepository:
             self.db.commit()
             self.db.refresh(user)
         return user
+
+    def update_last_login(self, user_id: int) -> None:
+        """Update user's last login timestamp"""
+        user = self.get_by_id(user_id)
+        if user:
+            user.last_login = datetime.now(timezone.utc)  # type: ignore
+            self.db.commit()
+
+    def get_inactive_verified_users(self, days: int) -> List[model.User]:
+        """Get verified users who haven't logged in for X days"""
+        cutoff_date = datetime.now(timezone.utc) - timedelta(days=days)
+        return self.db.query(model.User).filter(
+            model.User.is_verified == True,
+            model.User.last_login < cutoff_date
+        ).all()

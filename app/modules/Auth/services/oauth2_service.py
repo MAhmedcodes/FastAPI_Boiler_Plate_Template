@@ -33,7 +33,7 @@ class OAuth2Service:
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Invalid Email or Password"
             )
-    
+        user_repo.update_last_login(user.id) # type: ignore
         return user
     
     @staticmethod
