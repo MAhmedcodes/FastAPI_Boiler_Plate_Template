@@ -10,4 +10,12 @@ CELERY_BEAT_SCHEDULE = {
         "kwargs": {"days_threshold": 5},  # Users inactive for 5+ days
         "options": {"queue": "email_queue"},
     },
+
+    # NEW: Cleanup job - runs every 15 days at 2:00 AM
+    "cleanup_job": {
+        "task": "app.core.celery.tasks.cleanup_tasks.full_cleanup_task",
+        # Every 15 days at 2 AM
+        "schedule": crontab(day_of_month="*/15", hour=2, minute=0),
+        "options": {"queue": "maintenance_queue"},
+    },
 }
