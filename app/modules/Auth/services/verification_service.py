@@ -3,6 +3,7 @@ from fastapi import HTTPException, status
 from app.modules.Users.repository.user_repository import UserRepository
 from app.modules.Auth.repository.otp_repository import OTPRepository
 from shared.utils.email_utils import send_verification_email
+from app.core.celery.tasks.email_tasks import send_welcome_email_task
 
 
 class VerificationService:
@@ -78,5 +79,6 @@ class VerificationService:
 
         # Mark user as verified
         user_repo.verify_user(user_id)
+        send_welcome_email_task.delay(user.email, user.first_name)  # type: ignore
 
         return {"message": "User verified successfully"}

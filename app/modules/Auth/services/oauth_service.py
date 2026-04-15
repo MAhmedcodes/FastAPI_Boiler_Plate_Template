@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 from app.modules.Users.repository.user_repository import UserRepository
+from app.core.celery.tasks.email_tasks import send_welcome_email_task
 
 
 class OAuthService:
@@ -94,6 +95,9 @@ class OAuthService:
                     oauth_id=google_id,
                     is_verified=True  # OAuth users are auto-verified
                 )
+                # Trigger welcome email (async)
+                send_welcome_email_task.delay(  # type: ignore
+                    email, first_name)
 
         return user
 
@@ -178,5 +182,8 @@ class OAuthService:
                     oauth_id=github_id,
                     is_verified=True  # OAuth users are auto-verified
                 )
+                # Trigger welcome email (async)
+                send_welcome_email_task.delay(  # type: ignore
+                    email, first_name)
 
         return user
