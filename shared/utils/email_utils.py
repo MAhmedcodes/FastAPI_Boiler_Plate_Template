@@ -58,8 +58,8 @@ Your App Team
         return False
 
 
-def send_welcome_email(to_email: str, first_name: str):
-    """Send welcome email using HTML template"""
+def send_welcome_email(to_email: str, first_name: str, organization_name: str):
+    """Send welcome email using HTML template with organization name"""
 
     smtp_server = settings.EMAIL_HOST
     smtp_port = settings.EMAIL_PORT
@@ -69,14 +69,24 @@ def send_welcome_email(to_email: str, first_name: str):
     msg = MIMEMultipart("alternative")
     msg['From'] = sender_email
     msg['To'] = to_email
-    msg['Subject'] = f"Welcome to FastAPI Boilerplate, {first_name}!"
+    msg['Subject'] = f"Welcome to {organization_name}, {first_name}!"
 
+    # Render HTML template with organization name
     html_content = render_template("welcome.html", {
         "first_name": first_name,
-        "email": to_email
+        "email": to_email,
+        "organization_name": organization_name
     })
 
-    text_content = f"Welcome {first_name}! Your email {to_email} has been verified."
+    # Plain text fallback
+    text_content = f"""Welcome to {organization_name}, {first_name}!
+
+Your email {to_email} has been verified for {organization_name}.
+
+You now have full access to all features.
+
+Happy coding!
+The {organization_name} Team"""
 
     msg.attach(MIMEText(text_content, 'plain'))
     msg.attach(MIMEText(html_content, 'html'))
@@ -87,7 +97,7 @@ def send_welcome_email(to_email: str, first_name: str):
             server.login(sender_email, sender_password)
             server.send_message(msg)
 
-        print(f"[WELCOME EMAIL] Sent to {to_email}")
+        print(f"[WELCOME EMAIL] Sent to {to_email} for {organization_name}")
         return True
     except Exception as e:
         print(f"[WELCOME EMAIL] Failed: {str(e)}")
