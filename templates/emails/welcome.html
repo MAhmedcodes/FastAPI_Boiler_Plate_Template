@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+  <head>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+        border: 1px solid #ddd;
+      }
+      .header {
+        background-color: #4caf50;
+        color: white;
+        padding: 10px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h2>Welcome {{ first_name }}! 🚀</h2>
+      </div>
+      <p>Thank you for verifying your email: <strong>{{ email }}</strong></p>
+      <p>You now have full access to all features.</p>
+      <p><a href="http://localhost:8000/docs">API Documentation</a></p>
+      <p>Happy coding!</p>
+    </div>
+  </body>
+</html>
