@@ -1,35 +1,39 @@
+# ============================================
+# BACKEND
+# ============================================
+
 # Environment variables
-.env
-.env.local
-.env.*.local
+backend/.env
+backend/.env.local
+backend/.env.*.local
 
 # Virtual environments
-myenv/
-venv/
-env/
-ENV/
-.venv/
+backend/myenv/
+backend/venv/
+backend/env/
+backend/ENV/
+backend/.venv/
 
 # Python cache
-__pycache__/
-**/__pycache__/
-*.pyc
-*.pyo
-*.pyd
-*.py[cod]
-*$py.class
+backend/__pycache__/
+backend/**/__pycache__/
+backend/*.pyc
+backend/*.pyo
+backend/*.pyd
+backend/*.py[cod]
+backend/*$py.class
 
 # Python packaging
-dist/
-build/
-*.egg-info/
+backend/dist/
+backend/build/
+backend/*.egg-info/
 
 # Database files
-*.sqlite3
-*.db
+backend/*.sqlite3
+backend/*.db
 
 # Logs
-*.log
+backend/*.log
 
 # IDE and editor files
 .vscode/
@@ -42,13 +46,67 @@ build/
 Thumbs.db
 
 # Testing
-.pytest_cache/
-.coverage
-htmlcov/
-data/
-*.wal
-*.active
-data/
-celerybeat-schedule*
-*.wal
-*.active
+backend/.pytest_cache/
+backend/.coverage
+backend/htmlcov/
+backend/.pytest_cache/
+backend/.coverage
+backend/htmlcov/
+
+# Celery
+backend/celerybeat-schedule*
+backend/*.wal
+backend/*.active
+
+# Alembic
+backend/alembic/versions/*.pyc
+
+# ============================================
+# FRONTEND (when you add it)
+# ============================================
+
+# Dependencies
+frontend/node_modules/
+frontend/.pnp/
+frontend/.pnp.js
+
+# Testing
+frontend/coverage/
+
+# Production builds
+frontend/dist/
+frontend/build/
+
+# Environment variables
+frontend/.env
+frontend/.env.local
+frontend/.env.*.local
+
+# Logs
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+# Editor directories and files
+frontend/.vscode/
+frontend/.idea/
+frontend/*.suo
+frontend/*.ntvs*
+frontend/*.njsproj
+frontend/*.sln
+frontend/*.sw?
+
+# ============================================
+# DOCKER
+# ============================================
+
+*.pid
+docker-compose.override.yml
+
+# ============================================
+# MISC
+# ============================================
+
+.env
+.env.local
+.env.*.local
