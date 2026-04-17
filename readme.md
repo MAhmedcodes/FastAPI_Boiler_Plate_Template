@@ -1,16 +1,19 @@
 <div align="center">
 
-# 🚀 FastAPI Authentication Boilerplate
+# 🚀 FastAPI SaaS Authentication Boilerplate
 
-### Professional, Production-Ready FastAPI Template with Complete Authentication System
+### Production-Ready Multi-Tenant FastAPI Template with Complete Authentication, Email Verification & Background Jobs
 
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-00a393?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.135+-00a393?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
 [![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-13+-316192?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org)
+[![Redis](https://img.shields.io/badge/Redis-7+-DC382D?style=for-the-badge&logo=redis&logoColor=white)](https://redis.io)
+[![Celery](https://img.shields.io/badge/Celery-5.6+-37814A?style=for-the-badge&logo=celery&logoColor=white)](https://docs.celeryq.dev)
 [![JWT](https://img.shields.io/badge/JWT-Auth-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)](https://jwt.io)
+[![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://docker.com)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 
-[Features](#-features) • [Installation](#-installation) • [API Docs](#-api-endpoints) • [Security](#-security-features) • [Contributing](#-contributing)
+[Features](#-features) • [Installation](#-installation) • [API Docs](#-api-endpoints) • [Architecture](#-architecture) • [Multi-Tenancy](#-multi-tenancy--saas) • [Contributing](#-contributing)
 
 </div>
 
@@ -18,245 +21,225 @@
 
 ## 📖 Overview
 
-A **complete, production-ready FastAPI boilerplate** featuring JWT authentication, OAuth2 integration (Google & GitHub), comprehensive security middleware, and modular architecture. Built with industry best practices for scalability and maintainability.
+A **complete, production-ready FastAPI boilerplate** featuring:
 
-### Why This Boilerplate?
+- 🏢 **Multi-tenant SaaS architecture** with organization management
+- 🔐 **Comprehensive authentication** - JWT, OAuth2 (Google & GitHub), Email verification with OTP
+- 📧 **Email system** - SMTP delivery, OTP codes, organization-aware templates
+- ⚙️ **Background jobs** - Celery with pause/resume control, scheduled tasks
+- 🛡️ **Enterprise security** - Rate limiting, SQL injection protection, CORS, password hashing
+- 🏗️ **Modular architecture** - Repository pattern, service layer, dependency injection
+- 🧪 **Complete testing** - Unit & E2E test suite with mocked services
+- 🐳 **Docker ready** - Multi-service containerization with 8 services
 
-- ✅ **Production-Ready** - Battle-tested security features and error handling
-- ✅ **Modular Architecture** - Clean separation of concerns with repository pattern
-- ✅ **OAuth Integration** - Google and GitHub login out of the box
-- ✅ **Enterprise Security** - Rate limiting, SQL injection protection, CORS
-- ✅ **Developer Friendly** - Comprehensive documentation and examples
-- ✅ **Type Safety** - Full Pydantic validation and type hints
+**Perfect for:** SaaS applications, multi-tenant platforms, scalable APIs, production deployments
 
 ---
 
 ## ✨ Features
 
-<table>
-<tr>
-<td width="50%">
-
 ### 🔐 Authentication & Authorization
 
-- JWT token-based authentication
-- User registration with email validation
-- Secure password storage (bcrypt)
-- OAuth2 password flow compliance
-- **Email verification with OTP**
-- **6-digit codes, 24-hour expiry**
-- **Provider locking** (no cross-provider auth)
+- ✅ JWT token-based authentication with configurable expiration
+- ✅ User registration with email validation
+- ✅ Secure password storage (Argon2 & bcrypt)
+- ✅ OAuth2 password flow compliance
+- ✅ Email verification with 6-digit OTP (24-hour expiry)
+- ✅ Provider locking (email/password, Google, GitHub)
+- ✅ Multi-organization support with invite tokens
 
-</td>
-<td width="50%">
+### 🏢 Multi-Tenancy & SaaS
+
+- ✅ Organization-based tenant isolation
+- ✅ Invite token system for joining organizations
+- ✅ Same email across multiple organizations
+- ✅ Cross-organization user management
+- ✅ OAuth support for multi-org scenarios
+- ✅ Organization context in all operations
 
 ### 🌐 OAuth Integration
 
-- Google OAuth2 login
-- GitHub OAuth2 login
-- Automatic profile data extraction
-- OAuth state management
-- CSRF protection
-- Provider-specific adapters
-- **Auto-verification for OAuth users**
-
-</td>
-</tr>
-<tr>
-<td width="50%">
-
-### 🛡️ Security Features
-
-- Rate limiting (5-10 req/min)
-- SQL injection protection
-- CORS configuration
-- Password strength validation
-- Secure session management
-- XSS prevention
-- **OTP expiration & single-use**
-
-</td>
-<td width="50%">
-
-### 🏗️ Architecture
-
-- Modular structure
-- Repository pattern
-- Service layer separation
-- Dependency injection
-- Environment-based config
-- Database migrations (Alembic)
-- **Celery background tasks**
-- **Docker multi-service setup**
-
-</td>
-</tr>
-<tr>
-<td width="50%">
+- ✅ Google OAuth2 login with auto-profile extraction
+- ✅ GitHub OAuth2 login with auto-profile extraction
+- ✅ OAuth state management & CSRF protection
+- ✅ Multi-org OAuth support
+- ✅ Auto-verification for OAuth users
+- ✅ Invite token OAuth flow
 
 ### 📧 Email System
 
-- **SMTP email delivery (Gmail supported)**
-- **Async task processing with Celery**
-- **OTP verification emails**
-- **Customizable email templates**
-- **Retry mechanism (3 attempts)**
-- **Email queue with gevent pool**
-
-</td>
-<td width="50%">
+- ✅ SMTP email delivery (Gmail supported)
+- ✅ Async task processing with Celery
+- ✅ OTP verification emails
+- ✅ Welcome emails with organization context
+- ✅ Daily reminder emails for inactive users
+- ✅ Customizable email templates
+- ✅ Retry mechanism (3 attempts)
+- ✅ Email queue with gevent pool (50 concurrent)
 
 ### 🔄 Background Jobs
 
-- **Celery worker queues (email, cleanup)**
-- **Scheduled tasks with Celery Beat**
-- **Flower monitoring dashboard**
-- **Redis message broker**
-- **Gevent pool for email (50 concurrent)**
-- **Automatic old OTP cleanup (daily)**
+- ✅ Celery worker queues (email, maintenance)
+- ✅ Scheduled tasks with Celery Beat
+- ✅ Pause/Resume control per task type
+- ✅ Flower monitoring dashboard
+- ✅ Redis message broker
+- ✅ Automatic cleanup (15+ day old tasks)
+- ✅ Daily reminder scheduling
 
-</td>
-</tr>
-</table>
+### 🛡️ Security Features
+
+- ✅ Rate limiting (5-10 req/min, configurable)
+- ✅ SQL injection protection middleware
+- ✅ CORS configuration with origin validation
+- ✅ Password strength validation
+- ✅ Secure session management
+- ✅ XSS prevention
+- ✅ OTP expiration & single-use validation
+- ✅ Multi-tenant data isolation
+
+### 🏗️ Architecture & Code Quality
+
+- ✅ Modular structure with clean separation
+- ✅ Repository pattern for data access
+- ✅ Service layer for business logic
+- ✅ Dependency injection setup
+- ✅ Environment-based configuration
+- ✅ Database migrations (Alembic)
+- ✅ Type hints throughout (Pydantic)
+- ✅ Custom error handlers
+
+### 🧪 Testing Infrastructure
+
+- ✅ Complete test suite (Unit + E2E)
+- ✅ Pytest with fixtures
+- ✅ Test database isolation
+- ✅ Mocked external services
+- ✅ Coverage reporting
+- ✅ Shared conftest configuration
 
 ---
 
 ## 🛠️ Tech Stack
 
-| **Category**         | **Technology**          | **Purpose**                       |
-| -------------------- | ----------------------- | --------------------------------- |
-| **Framework**        | FastAPI 0.104+          | High-performance async API        |
-| **ORM**              | SQLAlchemy 2.0          | Database abstraction              |
-| **Database**         | PostgreSQL 13+          | Relational data storage           |
-| **Cache/Queue**      | Redis 7+                | Celery message broker             |
-| **Task Queue**       | Celery 5.3+             | Async background jobs             |
-| **Authentication**   | Python-JOSE, PyJWT      | JWT token generation & validation |
-| **OAuth**            | Authlib 1.2+            | Google & GitHub OAuth integration |
-| **Password Hash**    | Passlib + bcrypt        | Secure password hashing           |
-| **Email**            | smtplib (built-in)      | SMTP email delivery               |
-| **Rate Limiting**    | SlowAPI                 | Request throttling                |
-| **Validation**       | Pydantic 2.0            | Request/response validation       |
-| **Server**           | Uvicorn                 | ASGI server                       |
-| **Migrations**       | Alembic                 | Database version control          |
-| **Monitoring**       | Flower                  | Celery task monitoring            |
-| **Containerization** | Docker + Docker Compose | Multi-service deployment          |
+| Category        | Technology              | Purpose                     |
+| --------------- | ----------------------- | --------------------------- |
+| **Framework**   | FastAPI 0.135+          | High-performance async API  |
+| **ORM**         | SQLAlchemy 2.0          | Database abstraction layer  |
+| **Database**    | PostgreSQL 13+          | Relational data storage     |
+| **Cache/Queue** | Redis 7+                | Celery message broker       |
+| **Tasks**       | Celery 5.6+             | Async background jobs       |
+| **Auth**        | Python-JOSE, Authlib    | JWT & OAuth2 handling       |
+| **Hashing**     | Argon2, Bcrypt, Passlib | Secure password storage     |
+| **Email**       | smtplib, SMTP           | Email delivery              |
+| **Rate Limit**  | SlowAPI, Limits         | Request throttling          |
+| **Validation**  | Pydantic 2.12+          | Request/response validation |
+| **Server**      | Uvicorn                 | ASGI server                 |
+| **Migrations**  | Alembic                 | Database versioning         |
+| **Monitoring**  | Flower                  | Celery task monitoring      |
+| **Testing**     | Pytest, Pytest-Cov      | Unit & E2E testing          |
+| **Container**   | Docker, Docker Compose  | Multi-service deployment    |
 
 ---
 
 ## 📁 Project Structure
 
 ```
-FastAPI-Boilerplate/
+fastapi-saas-boilerplate/
 │
-├── 📂 src/app/                      # Application source code
+├── 📂 app/                          # Application source code
 │   ├── 📂 core/                     # Core functionality
-│   │   ├── 📂 config/               # Configuration & settings
-│   │   │   ├── __init__.py
-│   │   │   └── settings.py          # Environment variables
-│   │   │
-│   │   ├── 📂 database/             # Database connection
-│   │   │   ├── __init__.py
-│   │   │   └── session.py           # SQLAlchemy session
-│   │   │
+│   │   ├── 📂 celery/               # Celery configuration & tasks
+│   │   ├── 📂 config/               # Settings & configuration
+│   │   ├── 📂 database/             # Database connection & session
 │   │   ├── 📂 dependencies/         # Dependency injection
-│   │   │   ├── __init__.py
-│   │   │   └── auth.py              # Auth dependencies
-│   │   │
-│   │   ├── 📂 middleware/           # Custom middleware
-│   │   │   ├── __init__.py
-│   │   │   ├── cors.py              # CORS configuration
-│   │   │   ├── rate_limit.py        # Rate limiting
-│   │   │   └── sql_injection.py     # SQL injection protection
-│   │   │
-│   │   └── 📂 security/             # Security handlers
-│   │       ├── 📂 OAuth/            # OAuth providers
-│   │       │   ├── google.py
-│   │       │   └── github.py
-│   │       └── 📂 OAuth2/           # JWT handling
-│   │           └── jwt.py
+│   │   ├── 📂 errors/               # Custom error handlers
+│   │   ├── 📂 middleware/           # Custom middleware (CORS, rate limit, etc.)
+│   │   └── 📂 security/             # Auth handlers (OAuth, JWT)
 │   │
 │   ├── 📂 modules/                  # Feature modules
-│   │   │
 │   │   ├── 📂 auth/                 # Authentication module
-│   │   │   ├── __init__.py
-│   │   │   ├── 📂 repository/       # Data access layer
-│   │   │   │   └── auth_repo.py
-│   │   │   ├── 📂 router/           # API endpoints
-│   │   │   │   └── auth_routes.py
-│   │   │   ├── 📂 schema/           # Pydantic models
-│   │   │   │   └── auth_schema.py
-│   │   │   └── 📂 services/         # Business logic
-│   │   │       └── auth_service.py
+│   │   │   ├── models/              # OTP model
+│   │   │   ├── repository/          # Data access
+│   │   │   ├── router/              # API endpoints
+│   │   │   ├── schema/              # Pydantic models
+│   │   │   └── services/            # Business logic
+│   │   │
+│   │   ├── 📂 jobs/                 # Background jobs module
+│   │   │   ├── models/              # Task control model
+│   │   │   ├── repository/          # Job data access
+│   │   │   ├── router/              # Job management routes
+│   │   │   ├── schema/              # Job schemas
+│   │   │   └── services/            # Job control services
+│   │   │
+│   │   ├── 📂 organizations/        # Multi-tenant organization
+│   │   │   ├── models/              # Organization models
+│   │   │   ├── repository/          # Organization data access
+│   │   │   ├── router/              # Organization routes
+│   │   │   ├── schema/              # Organization schemas
+│   │   │   └── services/            # Organization logic
 │   │   │
 │   │   └── 📂 users/                # Users module
-│   │       ├── __init__.py
-│   │       ├── 📂 models/           # Database models
-│   │       │   └── user_model.py
-│   │       ├── 📂 repository/       # Data access layer
-│   │       │   └── user_repo.py
-│   │       ├── 📂 router/           # API endpoints
-│   │       │   └── user_routes.py
-│   │       ├── 📂 schema/           # Pydantic models
-│   │       │   └── user_schema.py
-│   │       └── 📂 services/         # Business logic
-│   │           └── user_service.py
+│   │       ├── models/              # User database model
+│   │       ├── repository/          # User data access
+│   │       ├── router/              # User API endpoints
+│   │       ├── schema/              # User schemas
+│   │       └── services/            # User business logic
 │   │
-│   └── 📂 shared/                   # Shared utilities
-│       └── 📂 utils/
-│           └── password.py          # Password hashing
+│   ├── 📂 shared/                   # Shared utilities
+│   │   ├── 📂 constants/            # Application constants
+│   │   ├── 📂 utils/                # Utility functions
+│   │   └── 📂 validator/            # Custom validators
+│   │
+│   ├── 📂 templates/                # Email templates
+│   │   └── 📂 emails/               # Email templates
+│   │
+│   └── main.py                      # Application entry point
 │
-├── 📂 alembic/                      # Database migrations
-│   ├── versions/
-│   └── env.py
+├── 📂 migrations/                   # Alembic database migrations
 │
 ├── 📂 tests/                        # Test suite
-│   ├── 📂 unit/                     # Unit tests
-│   └── 📂 integration/              # Integration tests
+│   ├── 📂 Unit/                     # Unit tests
+│   ├── 📂 E2E/                      # End-to-end tests
+│   ├── conftest.py                  # Pytest fixtures
+│   └── pytest.ini                   # Pytest config
 │
 ├── 📂 scripts/                      # Utility scripts
-│   └── init_db.py
-│
 ├── 📂 docs/                         # Documentation
-│   └── api.md
-│
-├── 📄 main.py                       # Application entry point
-├── 📄 .env.example                  # Environment template
-├── 📄 requirements.txt              # Dependencies
-├── 📄 pyproject.toml                # Project configuration
-├── 📄 alembic.ini                   # Alembic config
-├── 📄 Dockerfile                    # Docker configuration
-├── 📄 docker-compose.yml            # Docker Compose
-└── 📄 README.md                     # This file
+├── .env.example                     # Environment template
+├── .gitignore                       # Git ignore
+├── alembic.ini                      # Alembic config
+├── docker-compose.yml               # Docker Compose
+├── Dockerfile                       # Docker image
+├── pyproject.toml                   # Project config
+├── requirements.txt                 # Dependencies
+├── requirements-dev.txt             # Dev dependencies
+└── README.md                        # This file
 ```
 
 ---
 
-## 🚀 Installation
+## 🚀 Installation & Setup
 
 ### Prerequisites
 
-Before you begin, ensure you have the following installed:
-
-- **Python** 3.8 or higher ([Download](https://www.python.org/downloads/))
+- **Python** 3.8+ ([Download](https://www.python.org/downloads/))
 - **PostgreSQL** 13+ ([Download](https://www.postgresql.org/download/))
+- **Redis** 7+ ([Download](https://redis.io/download))
 - **Git** ([Download](https://git-scm.com/downloads))
 - **Google OAuth Credentials** ([Get Here](https://console.cloud.google.com/))
 - **GitHub OAuth App** ([Create Here](https://github.com/settings/developers))
 
----
-
 ### Step 1: Clone Repository
 
 ```bash
-git clone https://github.com/yourusername/fastapi-boilerplate.git
-cd fastapi-boilerplate
+git clone https://github.com/yourusername/fastapi-saas-boilerplate.git
+cd fastapi-saas-boilerplate
 ```
-
----
 
 ### Step 2: Create Virtual Environment
 
-<details open>
+<details>
 <summary><b>🪟 Windows</b></summary>
 
 ```bash
@@ -276,538 +259,390 @@ source venv/bin/activate
 
 </details>
 
----
-
 ### Step 3: Install Dependencies
 
 ```bash
-# Install production dependencies
+# Production dependencies
 pip install -r requirements.txt
 
-# Or install with development dependencies
+# Or with dev dependencies for testing
 pip install -r requirements-dev.txt
 ```
-
-<details>
-<summary>📦 <b>Key Dependencies</b></summary>
-
-```
-fastapi>=0.104.0
-uvicorn[standard]>=0.24.0
-sqlalchemy>=2.0.0
-alembic>=1.12.0
-pydantic>=2.0.0
-pydantic-settings>=2.0.0
-python-jose[cryptography]>=3.3.0
-passlib[bcrypt]>=1.7.4
-authlib>=1.2.0
-python-multipart>=0.0.6
-slowapi>=0.1.9
-psycopg2-binary>=2.9.9
-```
-
-</details>
-
----
 
 ### Step 4: Database Setup
 
 ```bash
-# Create PostgreSQL database
-createdb fastapi_boilerplate_db
+# Create database
+createdb fastapi_saas_db
 
 # Run migrations
 alembic upgrade head
 ```
 
----
-
 ### Step 5: Environment Configuration
 
-Create a `.env` file in the project root:
-
 ```bash
+# Copy environment template
 cp .env.example .env
+
+# Generate secret key
+python -c "import secrets; print(secrets.token_hex(32))"
 ```
 
 Edit `.env` with your configuration:
 
 ```bash
 # ========================================
-# DATABASE CONFIGURATION
+# DATABASE
 # ========================================
-DATABASE_URL=postgresql://username:password@localhost:5432/fastapi_boilerplate_db
+DATABASE_URL=postgresql://username:password@localhost:5432/fastapi_saas_db
 
 # ========================================
-# JWT CONFIGURATION
+# JWT
 # ========================================
-SECRET_KEY=your_super_secret_key_here_min_32_characters
+SECRET_KEY=your_32_char_secret_key_here
 ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=30
 
 # ========================================
-# GOOGLE OAUTH CONFIGURATION
+# GOOGLE OAUTH
 # ========================================
-GOOGLE_CLIENT_ID=your_google_client_id.apps.googleusercontent.com
-GOOGLE_CLIENT_SECRET=your_google_client_secret
+GOOGLE_CLIENT_ID=your_client_id.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=your_client_secret
 GOOGLE_REDIRECT_URI=http://localhost:8000/auth/google/callback
 
 # ========================================
-# GITHUB OAUTH CONFIGURATION
+# GITHUB OAUTH
 # ========================================
-GITHUB_CLIENT_ID=your_github_client_id
-GITHUB_CLIENT_SECRET=your_github_client_secret
+GITHUB_CLIENT_ID=your_client_id
+GITHUB_CLIENT_SECRET=your_client_secret
 GITHUB_REDIRECT_URI=http://localhost:8000/auth/github/callback
 
 # ========================================
-# CORS CONFIGURATION
+# REDIS (Celery)
+# ========================================
+REDIS_BROKER_URL=redis://localhost:6379/0
+REDIS_RESULT_BACKEND=redis://localhost:6379/1
+
+# ========================================
+# EMAIL (Gmail)
+# ========================================
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=465
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASS=your_16_char_app_password
+SMTP_FROM_EMAIL=your_email@gmail.com
+SMTP_FROM_NAME=Your App Name
+
+# ========================================
+# CORS
 # ========================================
 ALLOWED_ORIGINS=http://localhost:3000,http://localhost:8000
-
-# ========================================
-# RATE LIMITING
-# ========================================
-RATE_LIMIT_LOGIN=5/minute
-RATE_LIMIT_REGISTER=5/minute
-RATE_LIMIT_OAUTH=10/minute
 ```
 
----
-
-### Step 6: Generate Secret Key
-
-```bash
-# Generate a secure secret key
-python -c "import secrets; print(secrets.token_hex(32))"
-```
-
-Copy the output to your `.env` file as `SECRET_KEY`.
-
----
-
-### Step 7: Run Application
+### Step 6: Run Application
 
 ```bash
 # Development mode (with auto-reload)
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 
 # Production mode (with workers)
-uvicorn main:app --host 0.0.0.0 --port 8000 --workers 4
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
 ```
 
-✅ **Application running at:** [http://localhost:8000](http://localhost:8000)
+✅ **API:** [http://localhost:8000](http://localhost:8000)  
+📚 **Swagger Docs:** [http://localhost:8000/docs](http://localhost:8000/docs)  
+📖 **ReDoc:** [http://localhost:8000/redoc](http://localhost:8000/redoc)
 
-📚 **Interactive API Docs:** [http://localhost:8000/docs](http://localhost:8000/docs)
+---
 
-📖 **Alternative Docs:** [http://localhost:8000/redoc](http://localhost:8000/redoc)
+## 🏢 Multi-Tenancy & SaaS Architecture
+
+### Overview
+
+Complete SaaS multi-tenant system where users belong to organizations. Same email can exist across different organizations.
+
+**Key Features:**
+
+- Organization-based data isolation
+- Invite token system for secure joining
+- Same email across multiple organizations
+- OAuth support for multiple org scenarios
+- JWT includes organization context
+- Organization-scoped operations
+
+### Multi-Tenancy Rules
+
+| Rule                         | Implementation                               |
+| ---------------------------- | -------------------------------------------- |
+| Same email across orgs       | Composite unique: `(email, organization_id)` |
+| Email unique within org      | Same composite constraint                    |
+| Users can join multiple orgs | Separate accounts per org                    |
+| OAuth in multiple orgs       | Separate OAuth records per org               |
+| Organization isolation       | All queries filtered by org_id               |
+
+### Database Models
+
+**Organization:**
+
+```python
+class Organization(Base):
+    __tablename__ = "organizations"
+
+    id: int                 # Primary key
+    name: str               # Organization name
+    invite_token: str       # Unique UUID for invites
+    created_at: datetime    # Creation timestamp
+```
+
+**User (Multi-Tenant):**
+
+```python
+class User(Base):
+    __tablename__ = "users"
+
+    id: int                     # Primary key
+    email: str                  # NOT unique globally
+    first_name: str
+    last_name: str
+    password: str | None        # Null for OAuth
+    is_verified: bool           # Email verification status
+    organization_id: int        # FK to organizations
+    oauth_provider: str | None  # 'google' | 'github'
+    oauth_id: str | None        # Provider-specific ID
+    created_at: datetime
+
+    # Composite unique constraint
+    __table_args__ = (
+        UniqueConstraint('email', 'organization_id'),
+    )
+```
+
+### Organization Workflow
+
+```bash
+# 1. Create organization
+POST /organizations/create
+{
+  "name": "Acme Corp"
+}
+Response: {
+  "id": 1,
+  "name": "Acme Corp",
+  "invite_token": "abc123-def456-ghi789",
+  "created_at": "2024-01-15T10:00:00Z"
+}
+
+# 2. Register user with invite token
+POST /users/register
+{
+  "email": "john@example.com",
+  "first_name": "John",
+  "last_name": "Doe",
+  "password": "SecurePass123!",
+  "invite_token": "abc123-def456-ghi789"
+}
+
+# 3. OAuth login with invite (user clicks invite link)
+GET /auth/google/login?invite_token=abc123-def456-ghi789
+# System validates token, creates user in organization
+
+# 4. Login to specific organization
+POST /auth/login
+{
+  "username": "john@example.com",
+  "password": "SecurePass123!",
+  "organization_id": 1
+}
+```
 
 ---
 
 ## 📡 API Endpoints
 
+### Organization Endpoints
+
+| Method | Endpoint                | Description          | Auth |
+| ------ | ----------------------- | -------------------- | ---- |
+| `POST` | `/organizations/create` | Create organization  | ❌   |
+| `GET`  | `/organizations/`       | List organizations   | ❌   |
+| `POST` | `/organizations/join`   | Get org invite token | ❌   |
+
 ### Authentication Endpoints
 
-| Method | Endpoint                     | Description                  | Rate Limit | Auth Required |
-| ------ | ---------------------------- | ---------------------------- | ---------- | ------------- |
-| `POST` | `/auth/login`                | Login with credentials       | 5/minute   | ❌            |
-| `POST` | `/auth/request-verification` | Request OTP email            | 5/minute   | ✅            |
-| `POST` | `/auth/verify-otp`           | Submit OTP to verify account | 5/minute   | ✅            |
-| `GET`  | `/auth/google/login`         | Google OAuth redirect        | 10/minute  | ❌            |
-| `GET`  | `/auth/google/callback`      | Google OAuth callback        | 10/minute  | ❌            |
-| `GET`  | `/auth/github/login`         | GitHub OAuth redirect        | 10/minute  | ❌            |
-| `GET`  | `/auth/github/callback`      | GitHub OAuth callback        | 10/minute  | ❌            |
+| Method | Endpoint                     | Description            | Rate Limit | Auth |
+| ------ | ---------------------------- | ---------------------- | ---------- | ---- |
+| `POST` | `/auth/login`                | Login with credentials | 5/min      | ❌   |
+| `POST` | `/auth/request-verification` | Request OTP email      | 5/min      | ✅   |
+| `POST` | `/auth/verify-otp`           | Verify with OTP code   | 5/min      | ✅   |
+| `GET`  | `/auth/google/login`         | Google OAuth redirect  | 10/min     | ❌   |
+| `GET`  | `/auth/google/callback`      | Google callback        | 10/min     | ❌   |
+| `GET`  | `/auth/github/login`         | GitHub OAuth redirect  | 10/min     | ❌   |
+| `GET`  | `/auth/github/callback`      | GitHub callback        | 10/min     | ❌   |
 
 ### User Endpoints
 
-| Method | Endpoint          | Description       | Rate Limit | Auth Required |
-| ------ | ----------------- | ----------------- | ---------- | ------------- |
-| `POST` | `/users/register` | Register new user | 5/minute   | ❌            |
-| `GET`  | `/users/me`       | Get current user  | -          | ✅            |
+| Method | Endpoint          | Description             | Auth |
+| ------ | ----------------- | ----------------------- | ---- |
+| `POST` | `/users/register` | Register with invite    | ❌   |
+| `GET`  | `/users/me`       | Get current user        | ✅   |
+| `POST` | `/users/logout`   | Logout/invalidate token | ✅   |
+
+### Job Control Endpoints
+
+| Method | Endpoint                | Description          |
+| ------ | ----------------------- | -------------------- |
+| `GET`  | `/jobs/workers`         | Get Celery workers   |
+| `GET`  | `/jobs/active`          | Get running tasks    |
+| `POST` | `/jobs/trigger/cleanup` | Trigger cleanup task |
+| `GET`  | `/jobs/task/{task_id}`  | Get task status      |
+| `POST` | `/jobs/pause`           | Pause task type      |
+| `POST` | `/jobs/resume`          | Resume paused task   |
+| `GET`  | `/jobs/paused`          | Get paused tasks     |
 
 ---
 
-## 📝 Request/Response Examples
-
-### 1️⃣ Register User
-
-<details open>
-<summary><b>Click to expand</b></summary>
-
-**Request:**
-
-```bash
-curl -X POST "http://localhost:8000/users/register" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "john.doe@example.com",
-    "first_name": "John",
-    "last_name": "Doe",
-    "password": "SecurePassword123!"
-  }'
-```
-
-**Response:**
-
-```json
-{
-  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "token_type": "bearer",
-  "user_id": 1,
-  "email": "john.doe@example.com",
-  "first_name": "John",
-  "last_name": "Doe",
-  "is_verified": false,
-  "message": "User registered successfully. Please verify your email."
-}
-```
-
-</details>
-
----
-
-### 2️⃣ Request Email Verification OTP
-
-<details>
-<summary><b>Click to expand</b></summary>
-
-**Request:**
-
-```bash
-curl -X POST "http://localhost:8000/auth/request-verification" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN"
-```
-
-**Response:**
-
-```json
-{
-  "message": "Verification OTP sent to your email"
-}
-```
-
-**Email Received:**
-
-```
-Subject: Verify Your Account
-
-Your verification code is: 847291
-
-This code expires in 24 hours.
-```
-
-</details>
-
----
-
-### 3️⃣ Verify OTP
-
-<details>
-<summary><b>Click to expand</b></summary>
-
-**Request:**
-
-```bash
-curl -X POST "http://localhost:8000/auth/verify-otp" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"otp_code": "847291"}'
-```
-
-**Response:**
-
-```json
-{
-  "message": "User verified successfully"
-}
-```
-
-</details>
-
----
-
-### 4️⃣ Login
-
-<details>
-<summary><b>Click to expand</b></summary>
-
-**Request:**
-
-```bash
-curl -X POST "http://localhost:8000/auth/login" \
-  -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "username=john.doe@example.com&password=SecurePassword123!"
-```
-
-**Response:**
-
-```json
-{
-  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "token_type": "bearer"
-}
-```
-
-</details>
-
----
-
-### 5️⃣ Google OAuth Flow
-
-<details>
-<summary><b>Click to expand</b></summary>
-
-1. **Redirect user to:**
-
-   ```
-   GET http://localhost:8000/auth/google/login
-   ```
-
-2. **User authenticates with Google**
-
-3. **Google redirects to:**
-
-   ```
-   GET http://localhost:8000/auth/google/callback?code=...&state=...
-   ```
-
-4. **Response contains JWT token:**
-   ```json
-   {
-     "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-     "token_type": "bearer"
-   }
-   ```
-
-</details>
-
----
-
-### 6️⃣ Access Protected Route
-
-<details>
-<summary><b>Click to expand</b></summary>
-
-**Request:**
-
-```bash
-curl -X GET "http://localhost:8000/users/me" \
-  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-```
-
-**Response:**
-
-```json
-{
-  "id": 1,
-  "email": "john.doe@example.com",
-  "first_name": "John",
-  "last_name": "Doe",
-  "created_at": "2024-01-15T10:30:00Z",
-  "oauth_provider": null
-}
-```
-
-</details>
-
----
-
-## 📧 Email Verification & OTP System
+## 📧 Email System
 
 ### Overview
 
-Complete email verification system with OTP (One-Time Password) for user account verification.
+Complete email system with SMTP delivery, async processing, and organization context.
 
-**Key Features:**
+**Features:**
 
-- ✅ **6-digit OTP codes** with 24-hour expiration
-- ✅ **Synchronous email delivery** via SMTP (Gmail supported)
-- ✅ **Provider locking** - Users can only login with registration method
-- ✅ **Auto-verification** for OAuth users (Google/GitHub)
-- ✅ **Celery background tasks** for email delivery (async processing)
+- OTP verification emails with 6-digit codes
+- Welcome emails with organization name
+- Daily reminder emails for inactive users
+- Customizable email templates
+- Async delivery via Celery
+- Retry mechanism (3 attempts)
+- Gevent pool (50 concurrent)
 
----
+### Email Types
 
-### Verification Flow
+| Email        | Trigger                    | Variables                      |
+| ------------ | -------------------------- | ------------------------------ |
+| **OTP**      | User requests verification | first_name, otp_code, org_name |
+| **Welcome**  | User verifies OTP          | first_name, email, org_name    |
+| **Reminder** | Daily scheduled task       | first_name, org_name           |
 
-```mermaid
-sequenceDiagram
-    participant U as User
-    participant A as API
-    participant C as Celery
-    participant D as Database
-    participant E as Email
-
-    U->>A: Register (email/password)
-    A->>D: Create user (is_verified=false)
-    A->>U: Returns JWT token
-
-    U->>A: POST /auth/request-verification
-    A->>D: Generate OTP (expires 24h)
-    A->>C: Queue email task
-    C->>E: Send OTP via SMTP
-    E->>U: OTP received
-
-    U->>A: POST /auth/verify-otp
-    A->>D: Validate OTP
-    A->>D: Update user (is_verified=true)
-    A->>U: Verification confirmed
-```
-
----
-
-### Provider Locking Rules
-
-| Registration Method | Can Login With      | Email Verification Required |
-| ------------------- | ------------------- | --------------------------- |
-| Email/Password      | Email/Password only | ✅ Yes                      |
-| Google OAuth        | Google only         | ❌ No (auto-verified)       |
-| GitHub OAuth        | GitHub only         | ❌ No (auto-verified)       |
-
-**Example:**
-
-- User registers with email/password → Can only login with email/password (not Google/GitHub)
-- User registers with Google → Can only login with Google (not email/password or GitHub)
-
----
-
-### Email Configuration (Gmail)
-
-Add to your `.env` file:
+### Gmail Configuration
 
 ```bash
-# ========================================
-# EMAIL (SMTP) CONFIGURATION
-# ========================================
-SMTP_HOST=smtp.gmail.com
-SMTP_PORT=465
-SMTP_USER=your_email@gmail.com
-SMTP_PASSWORD=your_16_char_app_password  # NO SPACES!
-SMTP_FROM_EMAIL=your_email@gmail.com
-SMTP_FROM_NAME=Your App Name
-```
+# 1. Enable 2-Step Verification
+#    Settings → Security → 2-Step Verification
 
-**Gmail Setup Steps:**
+# 2. Generate App Password
+#    Settings → App passwords (select Mail & Other)
 
-1. **Enable 2-Step Verification** on your Google Account
-   - Go to: [Google Account Security](https://myaccount.google.com/security)
+# 3. Add to .env
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASS=abcdabcdabcdabcd  # 16-char password, no spaces
 
-2. **Generate App Password**
-   - Go to: [App Passwords](https://myaccount.google.com/apppasswords)
-   - Select **"Mail"** and **"Other (Custom name)"**
-   - Copy the 16-character password (**remove spaces**)
-
-3. **Add to `.env`**
-   ```bash
-   SMTP_PASSWORD=abcdabcdabcdabcd  # Example: no spaces
-   ```
-
----
-
-### OTP Email Template
-
-```
-Subject: Verify Your Account
-
-Hello {first_name},
-
-Your verification code is: {otp_code}
-
-This code expires in 24 hours.
-
-If you didn't request this, please ignore this email.
-
-Best regards,
-{app_name}
-```
-
----
-
-### Database Schema
-
-**User Model Updates:**
-
-```python
-class User(Base):
-    # ... existing fields
-    is_verified: bool = False          # New field
-    oauth_provider: str | None         # 'google' | 'github' | None
-```
-
-**New OTP Model:**
-
-```python
-class OTP(Base):
-    __tablename__ = "otps"
-
-    id: int                            # Primary key
-    user_id: int                       # Foreign key to users
-    otp_code: str                      # 6-digit code
-    expires_at: datetime               # 24 hours from creation
-    is_used: bool = False              # Prevents reuse
-    created_at: datetime
-```
-
----
-
-### Testing Email Verification
-
-**1. Register a user:**
-
-```bash
-curl -X POST "http://localhost:8000/users/register" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "test@example.com",
-    "first_name": "Test",
-    "last_name": "User",
-    "password": "test123"
-  }'
-```
-
-**2. Request OTP (use token from registration):**
-
-```bash
-curl -X POST "http://localhost:8000/auth/request-verification" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN"
-```
-
-**3. Check your email for 6-digit code**
-
-**4. Verify with OTP:**
-
-```bash
-curl -X POST "http://localhost:8000/auth/verify-otp" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"otp_code": "123456"}'
-```
-
----
-
-### Test SMTP Connection
-
-**Local:**
-
-```bash
+# 4. Test connection
 python -c "
 import smtplib
 smtp = smtplib.SMTP_SSL('smtp.gmail.com', 465)
 smtp.login('your_email@gmail.com', 'your_app_password')
-print('✅ SMTP Connection Successful!')
+print('✅ SMTP Success!')
 smtp.quit()
 "
 ```
 
-**Docker:**
+---
+
+## 🔄 Background Jobs (Celery)
+
+### Overview
+
+Asynchronous task processing with Celery, Redis broker, Celery Beat scheduler, and Flower monitoring.
+
+**Architecture:**
+
+```
+FastAPI → Redis (Broker) → Celery Workers → Tasks
+                    ↓
+              Celery Beat (Scheduler)
+                    ↓
+              Flower (Monitoring)
+```
+
+### Task Queues
+
+| Queue               | Purpose          | Workers | Concurrency | Tasks                   |
+| ------------------- | ---------------- | ------- | ----------- | ----------------------- |
+| `email_queue`       | Send emails      | gevent  | 50          | OTP, Welcome, Reminder  |
+| `maintenance_queue` | Database cleanup | prefork | 1           | Cleanup expired results |
+
+### Available Tasks
+
+| Task                           | Type      | Schedule      | Purpose                         |
+| ------------------------------ | --------- | ------------- | ------------------------------- |
+| `send_verification_email`      | Async     | On-demand     | Send OTP code                   |
+| `send_welcome_email`           | Async     | On-demand     | Send welcome after verification |
+| `send_reminder_email`          | Scheduled | Daily 9 AM    | Inactive user reminders         |
+| `cleanup_expired_task_results` | Scheduled | Every 15 days | Delete old results              |
+
+### Pause/Resume System
+
+Control task execution without code changes:
 
 ```bash
-docker exec -it fastapi_app python -c "
-import smtplib
-smtp = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-smtp.login('your_email@gmail.com', 'your_app_password')
-print('✅ SMTP Connection Successful!')
-smtp.quit()
-"
+# Pause a task type
+POST /jobs/pause
+{
+  "task_name": "welcome_email"
+}
+
+# Resume a paused task
+POST /jobs/resume
+{
+  "task_name": "welcome_email"
+}
+
+# Check paused tasks
+GET /jobs/paused
+```
+
+### Local Development
+
+```bash
+# Terminal 1: Redis
+redis-server
+
+# Terminal 2: Email Worker
+celery -A app.core.celery.celery_app worker \
+  -Q email_queue \
+  --pool=gevent \
+  --concurrency=50 \
+  --loglevel=info
+
+# Terminal 3: Cleanup Worker
+celery -A app.core.celery.celery_app worker \
+  -Q maintenance_queue \
+  --concurrency=1 \
+  --loglevel=info
+
+# Terminal 4: Celery Beat (Scheduler)
+celery -A app.core.celery.celery_app beat --loglevel=info
+
+# Terminal 5: Flower (Monitor)
+celery -A app.core.celery.celery_app flower --port=5555
+# Access at http://localhost:5555
+```
+
+### Docker
+
+```bash
+# All workers run automatically
+docker-compose up -d
+
+# View logs
+docker-compose logs -f celery_email_worker
+docker-compose logs -f celery_beat
+
+# Flower UI
+open http://localhost:5555
 ```
 
 ---
@@ -816,385 +651,281 @@ smtp.quit()
 
 ### 1. SQL Injection Protection
 
-Custom middleware automatically blocks malicious SQL patterns:
+Custom middleware blocks malicious SQL patterns:
 
-- SQL keywords: `SELECT`, `INSERT`, `DROP`, `UNION`, `DELETE`, etc.
-- SQL comments: `--`, `/* */`, `#`
-- Always-true conditions: `OR 1=1`, `AND 1=1`
-- Database commands: `EXEC`, `xp_cmdshell`
-
-```python
-# Example: Blocked request
-POST /users/register
-{
-  "email": "test@example.com' OR '1'='1"  # ❌ Blocked
-}
-```
-
----
+- SQL keywords: SELECT, INSERT, DROP, UNION, DELETE
+- SQL comments: --, /\*\*/, #
+- Conditions: OR 1=1, AND 1=1
+- Commands: EXEC, xp_cmdshell
 
 ### 2. Rate Limiting
 
-Prevents brute force attacks with configurable limits:
+Configurable rate limits prevent brute force:
 
-```python
-@limiter.limit("5/minute")   # Login & Registration
-@limiter.limit("10/minute")  # OAuth endpoints
+```bash
+# Login: 5 requests/minute
+# Register: 5 requests/minute
+# OAuth: 10 requests/minute
 ```
-
-**After exceeding limit:**
-
-```json
-{
-  "detail": "Rate limit exceeded: 5 per 1 minute"
-}
-```
-
----
 
 ### 3. Password Security
 
-- ✅ **Bcrypt hashing** with automatic salt generation
-- ✅ **72-byte limit handling** for bcrypt compatibility
-- ✅ **SHA-256 pre-hashing** option for longer passwords
-- ✅ **Passwords never stored in plain text**
+- Argon2 & Bcrypt hashing with automatic salt
+- 72-byte limit handling
+- SHA-256 pre-hashing option
+- Passwords never stored in plain text
 
-```python
-# Example: Secure password hashing
-hashed = hash_password("MySecurePassword123!")
-verify = verify_password("MySecurePassword123!", hashed)  # True
-```
+### 4. JWT Security
 
----
-
-### 4. JWT Token Security
-
-- ✅ Configurable expiration (default: 30 minutes)
-- ✅ HMAC-SHA256 signing algorithm
-- ✅ Token validation on protected routes
-- ✅ Secure token generation with cryptographic libraries
-
----
+- Configurable expiration (default: 30 minutes)
+- HMAC-SHA256 signing
+- Organization ID in payload
+- Secure cryptographic generation
 
 ### 5. CORS Protection
 
-Configured to allow only specific origins:
-
 ```python
 allow_origins=[
-    "http://localhost:3000",  # React dev server
-    "https://yourdomain.com"  # Production frontend
+    "http://localhost:3000",  # Dev
+    "https://yourdomain.com"  # Prod
 ]
 ```
 
----
+### 6. Multi-Tenant Isolation
 
-## 🗄️ Database Models
-
-### User Model
-
-```python
-class User(Base):
-    __tablename__ = "users"
-
-    id: int                    # Primary key
-    first_name: str            # Required
-    last_name: str             # Required
-    email: str                 # Unique, indexed
-    password: str | None       # Hashed (null for OAuth users)
-    is_verified: bool          # Email verification status
-    created_at: datetime       # Auto-generated
-    oauth_provider: str | None # 'google' | 'github' | None
-    oauth_id: str | None       # Unique provider ID
-```
-
-**Indexes:**
-
-- `email` (unique)
-- `oauth_id` (unique)
-
----
-
-### OTP Model
-
-```python
-class OTP(Base):
-    __tablename__ = "otps"
-
-    id: int                    # Primary key
-    user_id: int               # Foreign key to users table
-    otp_code: str              # 6-digit verification code
-    expires_at: datetime       # Expiration timestamp (24h)
-    is_used: bool              # Prevents code reuse
-    created_at: datetime       # Timestamp
-```
-
-**Relationships:**
-
-- `user_id` → Foreign key to `users.id`
-
-**Indexes:**
-
-- `user_id`
-- `otp_code`
+- Organization-scoped queries
+- JWT includes organization_id
+- Composite unique constraints
+- Data access layer enforcement
 
 ---
 
 ## 🧪 Testing
 
-### Manual Testing with cURL
+### Test Structure
 
-<details>
-<summary><b>Test Registration</b></summary>
-
-```bash
-curl -X POST "http://localhost:8000/users/register" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "test@example.com",
-    "first_name": "Test",
-    "last_name": "User",
-    "password": "test123"
-  }'
+```
+tests/
+├── conftest.py           # Shared fixtures
+├── Unit/                 # Isolated, mocked tests
+│   └── test_*.py
+└── E2E/                  # Real API calls
+    └── test_*.py
 ```
 
-</details>
-
-<details>
-<summary><b>Test Login</b></summary>
+### Running Tests
 
 ```bash
-curl -X POST "http://localhost:8000/auth/login" \
-  -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "username=test@example.com&password=test123"
-```
-
-</details>
-
-<details>
-<summary><b>Test Rate Limiting</b></summary>
-
-```bash
-# Run 6 times quickly to trigger rate limit
-for i in {1..6}; do
-  curl -X POST "http://localhost:8000/auth/login" \
-    -H "Content-Type: application/x-www-form-urlencoded" \
-    -d "username=test@example.com&password=wrong"
-done
-```
-
-</details>
-
----
-
-### Unit Tests
-
-```bash
-# Run all tests
+# All tests
 pytest
 
-# Run with coverage
+# Unit only
+pytest tests/Unit/
+
+# E2E only
+pytest tests/E2E/
+
+# With coverage
 pytest --cov=app --cov-report=html
 
-# Run specific test file
-pytest tests/unit/test_auth.py
+# Specific test
+pytest tests/E2E/test_auth_flow.py -v
+```
+
+### Coverage Report
+
+```bash
+# Generate HTML report
+pytest --cov=app --cov-report=html
+open htmlcov/index.html
 ```
 
 ---
 
-## 🐛 Common Issues & Solutions
+## 🐳 Docker Deployment
 
-<details>
-<summary><b>❌ bcrypt Password Length Error</b></summary>
+### Services
 
-**Error:**
+- 🚀 **FastAPI** (port 8000)
+- 🐘 **PostgreSQL** (port 5432)
+- 🔴 **Redis** (port 6379)
+- 📨 **Celery Email Worker**
+- 🧹 **Celery Cleanup Worker**
+- ⏰ **Celery Beat**
+- 🌸 **Flower** (port 5555)
+- 🛠️ **pgAdmin** (port 5050)
 
-```
-ValueError: password cannot be longer than 72 bytes
-```
-
-**Solution:**
-The boilerplate automatically handles this by truncating passwords to 72 bytes or using SHA-256 pre-hashing.
-
-</details>
-
-<details>
-<summary><b>❌ OAuth State Mismatch</b></summary>
-
-**Error:**
-
-```
-mismatching_state: CSRF Warning! State not equal
-```
-
-**Solution:**
-
-1. Clear browser cookies
-2. Try incognito mode
-3. Ensure redirect URIs match exactly in OAuth provider settings
-
-</details>
-
-<details>
-<summary><b>❌ Database Connection Failed</b></summary>
-
-**Error:**
-
-```
-sqlalchemy.exc.OperationalError: could not connect to server
-```
-
-**Solution:**
-
-**Local:**
+### Quick Start
 
 ```bash
-# Check if PostgreSQL is running
+# Clone
+git clone https://github.com/yourusername/fastapi-saas-boilerplate.git
+cd fastapi-saas-boilerplate
+
+# Setup
+cp .env.example .env
+# Edit .env with your settings
+
+# Run
+docker-compose up -d --build
+
+# Migrate
+docker exec -it fastapi_app alembic upgrade head
+
+# Check
+docker-compose logs -f
+```
+
+### Access Points
+
+| Service        | URL                         | Credentials             |
+| -------------- | --------------------------- | ----------------------- |
+| **API**        | http://localhost:8000       | -                       |
+| **Swagger**    | http://localhost:8000/docs  | -                       |
+| **ReDoc**      | http://localhost:8000/redoc | -                       |
+| **Flower**     | http://localhost:5555       | -                       |
+| **pgAdmin**    | http://localhost:5050       | admin@admin.com / admin |
+| **PostgreSQL** | localhost:5432              | postgres / postgres     |
+| **Redis**      | localhost:6379              | -                       |
+
+### Common Commands
+
+```bash
+# Start
+docker-compose up -d
+
+# Rebuild
+docker-compose up -d --build
+
+# Stop
+docker-compose down
+
+# Logs
+docker-compose logs -f
+
+# Specific service
+docker-compose logs -f fastapi_app
+docker-compose logs -f celery_email_worker
+
+# Execute command
+docker exec -it fastapi_app bash
+docker exec -it fastapi_app alembic upgrade head
+```
+
+---
+
+## 🗄️ Database Migrations (Alembic)
+
+### Commands
+
+```bash
+# Generate migration
+alembic revision --autogenerate -m "add field"
+
+# Apply all
+alembic upgrade head
+
+# Rollback one
+alembic downgrade -1
+
+# Check current
+alembic current
+
+# View history
+alembic history --verbose
+```
+
+### Docker
+
+```bash
+# Generate
+docker exec -it fastapi_app alembic revision --autogenerate -m "description"
+
+# Apply
+docker exec -it fastapi_app alembic upgrade head
+
+# Rollback
+docker exec -it fastapi_app alembic downgrade -1
+```
+
+---
+
+## 🐛 Troubleshooting
+
+### Email Not Sending
+
+**Solution:**
+
+1. Generate new Gmail App Password (no spaces)
+2. Enable 2-Step Verification on Google Account
+3. Test connection: `python -c "import smtplib; smtp = smtplib.SMTP_SSL('smtp.gmail.com', 465); smtp.login('email@gmail.com', 'password'); print('✅ OK')"`
+
+### Celery Tasks Not Processing
+
+**Solution:**
+
+```bash
+# Check workers running
+docker-compose ps | grep celery
+
+# Check Redis
+docker exec -it fastapi_redis redis-cli ping
+
+# Restart workers
+docker restart fastapi_celery_email_worker
+docker restart fastapi_celery_cleanup_worker
+```
+
+### Organization Invite Token Invalid
+
+**Solution:**
+
+1. Verify token exists: `SELECT * FROM organizations WHERE invite_token = 'token';`
+2. Check token format (should be UUID)
+3. Ensure no extra spaces
+4. Case-sensitive
+
+### Database Connection Failed
+
+**Solution (Local):**
+
+```bash
+# Check PostgreSQL
 pg_isready
 
 # Create database
-createdb fastapi_boilerplate_db
+createdb fastapi_saas_db
 
-# Check DATABASE_URL in .env
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/fastapi_boilerplate_db
+# Verify DATABASE_URL in .env
 ```
 
-**Docker:**
+**Solution (Docker):**
 
 ```bash
 # Restart database
 docker restart fastapi_db
 
-# Check database logs
+# Check logs
 docker logs fastapi_db
 
-# Recreate database
+# Recreate
 docker-compose down -v
 docker-compose up -d
 docker exec -it fastapi_app alembic upgrade head
 ```
 
-</details>
+### Module Import Errors
 
-<details>
-<summary><b>❌ Email Not Sending (SMTP Error)</b></summary>
+**Solution (Local):**
 
-**Error:**
+1. Activate virtual environment
+2. Install in editable mode: `pip install -e .`
+3. Check `__init__.py` files exist
 
-```
-smtplib.SMTPAuthenticationError: (535, b'5.7.8 Username and Password not accepted')
-```
-
-**Solution:**
-
-1. **Verify Gmail App Password:**
-   - Go to [Google App Passwords](https://myaccount.google.com/apppasswords)
-   - Generate new 16-character password
-   - **Remove all spaces** from the password
-   - Add to `.env`: `SMTP_PASSWORD=abcdabcdabcdabcd`
-
-2. **Test SMTP connection:**
-
-   ```bash
-   python -c "
-   import smtplib
-   smtp = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-   smtp.login('your_email@gmail.com', 'your_app_password')
-   print('✅ Success!')
-   smtp.quit()
-   "
-   ```
-
-3. **Check 2-Step Verification:**
-   - Must be enabled on Google Account
-   - [Enable here](https://myaccount.google.com/security)
-
-4. **Verify environment variables:**
-   ```bash
-   SMTP_HOST=smtp.gmail.com
-   SMTP_PORT=465
-   SMTP_USER=your_email@gmail.com
-   SMTP_PASSWORD=your16charpassword  # No spaces!
-   ```
-
-</details>
-
-<details>
-<summary><b>❌ Celery Worker Not Processing Tasks</b></summary>
-
-**Error:**
-
-```
-Tasks stuck in 'pending' state in Flower
-```
-
-**Solution:**
-
-**Check workers are running:**
+**Solution (Docker):**
 
 ```bash
-# Docker
-docker-compose ps | grep celery
-docker-compose logs -f celery_worker
-
-# Local
-celery -A app.core.celery_app inspect active
-```
-
-**Check Redis connection:**
-
-```bash
-# Docker
-docker exec -it fastapi_redis redis-cli ping
-# Should return: PONG
-
-# Local
-redis-cli ping
-```
-
-**Restart workers:**
-
-```bash
-# Docker
-docker restart fastapi_celery_worker
-docker restart fastapi_celery_cleanup_worker
-docker restart fastapi_celery_beat
-
-# Local
-# Kill existing workers and restart
-celery -A app.core.celery_app worker -Q email --pool=gevent --concurrency=50
-```
-
-**Check task registration:**
-
-```bash
-docker exec -it fastapi_app celery -A app.core.celery_app inspect registered
-```
-
-</details>
-
-<details>
-<summary><b>❌ Module Import Errors</b></summary>
-
-**Error:**
-
-```
-ModuleNotFoundError: No module named 'app'
-```
-
-**Solution:**
-
-**Local:**
-
-1. Ensure all directories have `__init__.py`
-2. Run from project root directory
-3. Check virtual environment is activated
-4. Install in editable mode: `pip install -e .`
-
-**Docker:**
-
-```bash
-# Rebuild container
+# Rebuild
 docker-compose down
 docker-compose up -d --build
 
@@ -1202,1230 +933,116 @@ docker-compose up -d --build
 docker exec -it fastapi_app python -c "import sys; print(sys.path)"
 ```
 
-</details>
-
-<details>
-<summary><b>❌ Docker Container Won't Start</b></summary>
-
-**Error:**
-
-```
-Container exits immediately or restarts constantly
-```
-
-**Solution:**
-
-```bash
-# Check logs
-docker-compose logs fastapi_app
-
-# Common issues:
-# 1. Port already in use
-sudo lsof -i :8000  # Find process using port 8000
-kill -9 <PID>       # Kill the process
-
-# 2. Missing environment variables
-# Check .env file exists and has all required variables
-
-# 3. Database not ready
-# Add healthcheck or wait script
-
-# 4. Rebuild from scratch
-docker-compose down -v
-docker system prune -a
-docker-compose up -d --build
-```
-
-</details>
-
-<details>
-<summary><b>❌ Alembic Migration Conflicts</b></summary>
-
-**Error:**
-
-```
-alembic.util.exc.CommandError: Multiple head revisions are present
-```
-
-**Solution:**
-
-```bash
-# Merge migration heads
-alembic merge heads -m "merge heads"
-
-# Or reset migrations (⚠️ development only)
-alembic downgrade base
-rm alembic/versions/*.py
-alembic revision --autogenerate -m "initial"
-alembic upgrade head
-```
-
-</details>
-
-<details>
-<summary><b>❌ OTP Not Found or Expired</b></summary>
-
-**Error:**
-
-```
-{"detail": "Invalid or expired OTP"}
-```
-
-**Solution:**
-
-1. **Check OTP was generated:**
-
-   ```sql
-   -- In PostgreSQL
-   SELECT * FROM otps WHERE user_id = <your_user_id> ORDER BY created_at DESC;
-   ```
-
-2. **Check expiration:**
-   - OTPs expire after 24 hours
-   - Request new OTP: `POST /auth/request-verification`
-
-3. **Check OTP wasn't already used:**
-
-   ```sql
-   SELECT is_used, expires_at FROM otps WHERE otp_code = '123456';
-   ```
-
-4. **Check email was sent:**
-
-   ```bash
-   # View Celery logs
-   docker-compose logs -f celery_worker
-
-   # Check Flower for failed tasks
-   open http://localhost:5555
-   ```
-
-</details>
-
----
-
-## 🔐 Environment Variables Reference
-
-### Core Configuration
-
-| Variable                      | Description                            | Required | Default                 |
-| ----------------------------- | -------------------------------------- | -------- | ----------------------- |
-| `DATABASE_URL`                | PostgreSQL connection string           | ✅       | -                       |
-| `SECRET_KEY`                  | JWT signing key (min 32 chars)         | ✅       | -                       |
-| `ALGORITHM`                   | JWT algorithm                          | ✅       | `HS256`                 |
-| `ACCESS_TOKEN_EXPIRE_MINUTES` | Token expiry time                      | ✅       | `30`                    |
-| `ALLOWED_ORIGINS`             | CORS allowed origins (comma-separated) | ✅       | `http://localhost:3000` |
-
-### Email Configuration
-
-| Variable          | Description                            | Required | Default           |
-| ----------------- | -------------------------------------- | -------- | ----------------- |
-| `SMTP_HOST`       | SMTP server hostname                   | ✅       | `smtp.gmail.com`  |
-| `SMTP_PORT`       | SMTP server port                       | ✅       | `465`             |
-| `SMTP_USER`       | SMTP username/email                    | ✅       | -                 |
-| `SMTP_PASSWORD`   | SMTP password (App Password for Gmail) | ✅       | -                 |
-| `SMTP_FROM_EMAIL` | Sender email address                   | ✅       | Same as SMTP_USER |
-| `SMTP_FROM_NAME`  | Sender display name                    | ❌       | `FastAPI App`     |
-
-### OAuth Configuration
-
-| Variable               | Description            | Required | Default |
-| ---------------------- | ---------------------- | -------- | ------- |
-| `GOOGLE_CLIENT_ID`     | Google OAuth client ID | ⚠️       | -       |
-| `GOOGLE_CLIENT_SECRET` | Google OAuth secret    | ⚠️       | -       |
-| `GOOGLE_REDIRECT_URI`  | Google callback URL    | ⚠️       | -       |
-| `GITHUB_CLIENT_ID`     | GitHub OAuth client ID | ⚠️       | -       |
-| `GITHUB_CLIENT_SECRET` | GitHub OAuth secret    | ⚠️       | -       |
-| `GITHUB_REDIRECT_URI`  | GitHub callback URL    | ⚠️       | -       |
-
-### Celery Configuration
-
-| Variable                | Description                             | Required | Default                    |
-| ----------------------- | --------------------------------------- | -------- | -------------------------- |
-| `REDIS_URL`             | Redis connection string (Celery broker) | ✅       | `redis://localhost:6379/0` |
-| `CELERY_RESULT_BACKEND` | Celery result backend                   | ❌       | Same as REDIS_URL          |
-
-**Legend:**
-
-- ✅ = Required for all configurations
-- ⚠️ = Required only if using OAuth features
-- ❌ = Optional
-
----
-
-## 🐳 Docker Deployment
-
-### Complete Docker Setup
-
-This boilerplate includes a **production-ready Docker setup** with all services containerized.
-
-**Services Included:**
-
-- 🚀 **FastAPI** - Main application (port 8000)
-- 🐘 **PostgreSQL** - Database (port 5432)
-- 🔴 **Redis** - Celery message broker (port 6379)
-- 📨 **Celery Worker** - Email tasks (background processing)
-- 🧹 **Celery Cleanup Worker** - Database cleanup tasks
-- ⏰ **Celery Beat** - Scheduled task scheduler
-- 🌸 **Flower** - Celery monitoring UI (port 5555)
-- 🛠️ **pgAdmin** - Database management UI (port 5050)
-
----
-
-### Quick Start
-
-```bash
-# Clone repository
-git clone https://github.com/yourusername/fastapi-boilerplate.git
-cd fastapi-boilerplate
-
-# Create .env file
-cp .env.example .env
-# Edit .env with your configuration
-
-# Start all services
-docker-compose up -d --build
-
-# Run database migrations
-docker exec -it fastapi_app alembic upgrade head
-
-# Check logs
-docker-compose logs -f
-```
-
-✅ **Application running at:** [http://localhost:8000](http://localhost:8000)
-
----
-
-### Docker Compose Architecture
-
-```yaml
-services:
-  # PostgreSQL Database
-  postgres:
-    image: postgres:15-alpine
-    ports: ["5432:5432"]
-    volumes: [postgres_data:/var/lib/postgresql/data]
-
-  # Redis (Celery Broker)
-  redis:
-    image: redis:7-alpine
-    ports: ["6379:6379"]
-
-  # FastAPI Application
-  fastapi:
-    build: .
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000
-    ports: ["8000:8000"]
-    depends_on: [postgres, redis]
-
-  # Celery Worker (Email Queue)
-  celery_worker:
-    build: .
-    command: celery -A app.core.celery_app worker -Q email --pool=gevent --concurrency=50
-    depends_on: [postgres, redis]
-
-  # Celery Worker (Cleanup Queue)
-  celery_cleanup_worker:
-    build: .
-    command: celery -A app.core.celery_app worker -Q cleanup --concurrency=1
-    depends_on: [postgres, redis]
-
-  # Celery Beat (Scheduler)
-  celery_beat:
-    build: .
-    command: celery -A app.core.celery_app beat --loglevel=info
-    depends_on: [postgres, redis]
-
-  # Flower (Monitoring)
-  flower:
-    build: .
-    command: celery -A app.core.celery_app flower --port=5555
-    ports: ["5555:5555"]
-    depends_on: [redis]
-
-  # pgAdmin (Database UI)
-  pgadmin:
-    image: dpage/pgadmin4:latest
-    ports: ["5050:80"]
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-```
-
----
-
-### Access Points
-
-| Service                | URL                                                        | Credentials                 |
-| ---------------------- | ---------------------------------------------------------- | --------------------------- |
-| **FastAPI API**        | [http://localhost:8000](http://localhost:8000)             | -                           |
-| **API Docs (Swagger)** | [http://localhost:8000/docs](http://localhost:8000/docs)   | -                           |
-| **API Docs (ReDoc)**   | [http://localhost:8000/redoc](http://localhost:8000/redoc) | -                           |
-| **Flower (Celery UI)** | [http://localhost:5555](http://localhost:5555)             | -                           |
-| **pgAdmin (DB UI)**    | [http://localhost:5050](http://localhost:5050)             | `admin@admin.com` / `admin` |
-| **PostgreSQL**         | `localhost:5432`                                           | `postgres` / `postgres`     |
-| **Redis**              | `localhost:6379`                                           | -                           |
-
----
-
-### Docker Commands
-
-<details>
-<summary><b>🚀 Starting & Stopping</b></summary>
-
-```bash
-# Start all services
-docker-compose up -d
-
-# Start with rebuild
-docker-compose up -d --build
-
-# Start specific service
-docker-compose up -d fastapi_app
-
-# Stop all services
-docker-compose down
-
-# Stop and remove volumes (⚠️ deletes database)
-docker-compose down -v
-
-# Restart specific service
-docker restart fastapi_app
-docker restart fastapi_db
-```
-
-</details>
-
-<details>
-<summary><b>📋 Viewing Logs</b></summary>
-
-```bash
-# All services
-docker-compose logs -f
-
-# Specific service
-docker-compose logs -f fastapi_app
-docker-compose logs -f celery_worker
-docker-compose logs -f postgres
-
-# Last 100 lines
-docker logs --tail 100 fastapi_app
-
-# Follow new logs only
-docker logs -f --since 5m fastapi_app
-```
-
-</details>
-
-<details>
-<summary><b>🔧 Executing Commands</b></summary>
-
-```bash
-# Access container shell
-docker exec -it fastapi_app bash
-docker exec -it fastapi_db bash
-
-# Run Python commands
-docker exec -it fastapi_app python -c "print('Hello')"
-
-# Access PostgreSQL
-docker exec -it fastapi_db psql -U postgres -d fastapi
-
-# Run Alembic migrations
-docker exec -it fastapi_app alembic upgrade head
-docker exec -it fastapi_app alembic revision --autogenerate -m "add field"
-
-# Test API endpoint
-docker exec fastapi_app curl http://localhost:8000/docs
-```
-
-</details>
-
-<details>
-<summary><b>🗄️ Database Operations</b></summary>
-
-```bash
-# Access PostgreSQL shell
-docker exec -it fastapi_db psql -U postgres -d fastapi
-
-# SQL commands (inside psql)
-\dt                          # List tables
-SELECT * FROM users;         # View users
-SELECT * FROM otps;          # View OTPs
-\q                           # Quit
-
-# Backup database
-docker exec fastapi_db pg_dump -U postgres fastapi > backup.sql
-
-# Restore database
-docker exec -i fastapi_db psql -U postgres fastapi < backup.sql
-
-# Reset database
-docker-compose down -v
-docker-compose up -d
-docker exec -it fastapi_app alembic upgrade head
-```
-
-</details>
-
-<details>
-<summary><b>🧹 Cleanup & Maintenance</b></summary>
-
-```bash
-# Remove stopped containers
-docker container prune
-
-# Remove unused images
-docker image prune -a
-
-# Remove all unused data
-docker system prune -a
-
-# Clean everything and rebuild
-docker-compose down -v
-docker system prune -a
-docker-compose up -d --build
-```
-
-</details>
-
----
-
-### Environment Variables (Docker)
-
-**Database Connection:**
-
-```bash
-# Inside Docker network
-DATABASE_URL=postgresql://postgres:postgres@postgres:5432/fastapi
-
-# From host machine
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/fastapi
-```
-
-**Redis Connection:**
-
-```bash
-# Inside Docker network
-REDIS_URL=redis://redis:6379/0
-
-# From host machine
-REDIS_URL=redis://localhost:6379/0
-```
-
----
-
-### Production Dockerfile
-
-```dockerfile
-# ===============================================
-# Multi-stage build for production
-# ===============================================
-FROM python:3.11-slim as base
-
-WORKDIR /app
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    postgresql-client \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
-
-# Install Python dependencies
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy application
-COPY ./src /app/src
-COPY ./alembic /app/alembic
-COPY ./alembic.ini /app/
-COPY pyproject.toml .
-
-# Install application
-RUN pip install .
-
-# Create non-root user
-RUN useradd -m -u 1000 appuser && \
-    chown -R appuser:appuser /app
-USER appuser
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s \
-  CMD curl -f http://localhost:8000/health || exit 1
-
-# Default command (override in docker-compose)
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
-```
-
----
-
-### Docker Networking
-
-**Internal communication:**
-
-- Services use service names as hostnames
-- `postgres` = `postgres:5432`
-- `redis` = `redis:6379`
-- `fastapi` = `fastapi:8000`
-
-**External access:**
-
-- Exposed ports accessible via `localhost`
-- Port mapping: `host:container`
-
----
-
-## 🔄 Background Tasks (Celery)
-
-### Overview
-
-Asynchronous task processing with Celery for email delivery and scheduled cleanup jobs.
-
-**Architecture:**
-
-```
-FastAPI → Redis (Broker) → Celery Workers → Execute Tasks
-                    ↓
-              Celery Beat (Scheduler)
-```
-
----
-
-### Available Task Queues
-
-| Queue     | Purpose                          | Worker Pool | Concurrency | Tasks                     |
-| --------- | -------------------------------- | ----------- | ----------- | ------------------------- |
-| `email`   | Send emails (OTP, notifications) | gevent      | 50          | `send_verification_email` |
-| `cleanup` | Database maintenance             | prefork     | 1           | `cleanup_old_otps`        |
-| `default` | General tasks                    | gevent      | 10          | `webhook_task`            |
-
----
-
-### Celery Tasks
-
-**1. Email Verification OTP**
-
-```python
-@celery_app.task(name="send_verification_email", queue="email")
-def send_verification_email(user_email: str, otp_code: str):
-    """Send OTP email to user"""
-    # Sends email via SMTP
-    # Retries: 3 times with exponential backoff
-```
-
-**2. Cleanup Old OTPs**
-
-```python
-@celery_app.task(name="cleanup_old_otps", queue="cleanup")
-def cleanup_old_otps():
-    """Delete expired OTPs (30+ days old)"""
-    # Runs daily at 2 AM via Celery Beat
-```
-
-**3. Webhook Task (Example)**
-
-```python
-@celery_app.task(name="webhook_task", queue="default")
-def webhook_task(url: str, payload: dict):
-    """Send webhook HTTP request"""
-    # Retries: 5 times
-```
-
----
-
-### Local Development (Celery)
-
-**Terminal Setup:**
-
-```bash
-# Terminal 1: Start Redis
-redis-server
-
-# Terminal 2: Email Worker
-celery -A app.core.celery_app worker \
-  -Q email \
-  --pool=gevent \
-  --concurrency=50 \
-  --loglevel=info
-
-# Terminal 3: Cleanup Worker
-celery -A app.core.celery_app worker \
-  -Q cleanup \
-  --concurrency=1 \
-  --loglevel=info
-
-# Terminal 4: Celery Beat (Scheduler)
-celery -A app.core.celery_app beat --loglevel=info
-
-# Terminal 5: Flower (Monitoring)
-celery -A app.core.celery_app flower --port=5555
-```
-
----
-
-### Docker (Celery)
-
-**All workers run automatically with `docker-compose up`**
-
-```bash
-# View worker logs
-docker-compose logs -f celery_worker
-docker-compose logs -f celery_cleanup_worker
-docker-compose logs -f celery_beat
-
-# Restart workers
-docker restart fastapi_celery_worker
-docker restart fastapi_celery_cleanup_worker
-
-# Scale workers
-docker-compose up -d --scale celery_worker=3
-
-# Monitor with Flower
-open http://localhost:5555
-```
-
----
-
-### Celery Beat Schedule
-
-```python
-# Scheduled tasks (runs via celery_beat)
-celery_app.conf.beat_schedule = {
-    'cleanup-old-otps-daily': {
-        'task': 'cleanup_old_otps',
-        'schedule': crontab(hour=2, minute=0),  # 2 AM daily
-    },
-}
-```
-
----
-
-### Monitor Tasks with Flower
-
-**Access:** [http://localhost:5555](http://localhost:5555)
-
-**Features:**
-
-- ✅ Real-time task monitoring
-- ✅ Worker status & statistics
-- ✅ Task history & results
-- ✅ Queue management
-- ✅ Performance graphs
-
----
-
-## 🗄️ Database Migrations (Alembic)
-
-### Local Development
-
-```bash
-# Generate new migration
-alembic revision --autogenerate -m "add is_verified field"
-
-# Apply all migrations
-alembic upgrade head
-
-# Rollback last migration
-alembic downgrade -1
-
-# Rollback all migrations
-alembic downgrade base
-
-# Check current version
-alembic current
-
-# View migration history
-alembic history --verbose
-```
-
----
-
-### Docker
-
-```bash
-# Generate new migration (autogenerate from model changes)
-docker exec -it fastapi_app alembic revision --autogenerate -m "description"
-
-# Apply all pending migrations
-docker exec -it fastapi_app alembic upgrade head
-
-# Rollback last migration
-docker exec -it fastapi_app alembic downgrade -1
-
-# Rollback all migrations (empty database)
-docker exec -it fastapi_app alembic downgrade base
-
-# Check current migration version
-docker exec -it fastapi_app alembic current
-
-# View migration history
-docker exec -it fastapi_app alembic history
-
-# Show SQL for migration without applying
-docker exec -it fastapi_app alembic upgrade head --sql
-
-# Stamp database as up-to-date without running migrations
-docker exec -it fastapi_app alembic stamp head
-```
-
----
-
-### Complete Workflow Example
-
-```bash
-# 1. First time setup - create database and run all migrations
-docker-compose up -d
-docker exec -it fastapi_app alembic upgrade head
-
-# 2. After changing models - generate new migration
-docker exec -it fastapi_app alembic revision --autogenerate -m "added new column"
-
-# 3. Apply the new migration
-docker exec -it fastapi_app alembic upgrade head
-
-# 4. Verify current version
-docker exec -it fastapi_app alembic current
-```
-
----
-
-### Troubleshooting Migrations
-
-```bash
-# If migrations conflict, stamp as current
-docker exec -it fastapi_app alembic stamp head
-
-# Force a fresh migration (if needed)
-docker exec -it fastapi_app alembic revision --autogenerate -m "fresh_start"
-
-# Check database connection from container
-docker exec -it fastapi_app python -c "
-from sqlalchemy import create_engine
-from app.core.config.config import settings
-engine = create_engine(settings.DATABASE_URL)
-conn = engine.connect()
-print('✅ Database Connected!')
-conn.close()
-"
-
-# View pending migrations
-docker exec -it fastapi_app alembic heads
-
-# Merge conflicting migration heads
-docker exec -it fastapi_app alembic merge heads -m "merge conflicts"
-```
-
----
-
-### Make Alias (Optional)
-
-Add to your `~/.bashrc` or `~/.zshrc`:
-
-```bash
-alias docker-alembic='docker exec -it fastapi_app alembic'
-```
-
-Then use:
-
-```bash
-docker-alembic upgrade head
-docker-alembic revision --autogenerate -m "add user field"
-docker-alembic current
-docker-alembic history
-```
-
----
-
-### First Time Setup
-
-**Local:**
-
-```bash
-# Create database
-createdb fastapi_db
-
-# Run migrations
-alembic upgrade head
-```
-
-**Docker:**
-
-```bash
-# Start services
-docker-compose up -d
-
-# Run migrations
-docker exec -it fastapi_app alembic upgrade head
-```
-
 ---
 
 ## 📚 What's Included
 
-✅ **Complete JWT Authentication System** - Register, login, token generation  
-✅ **Email Verification with OTP** - 6-digit codes, 24-hour expiry, SMTP delivery  
-✅ **OAuth Integration** - Google and GitHub with automatic profile extraction  
-✅ **Celery Background Tasks** - Async email delivery, scheduled cleanup jobs  
-✅ **Security Middleware** - CORS, rate limiting, SQL injection protection  
-✅ **Repository Pattern** - Clean separation of data access logic  
-✅ **Password Hashing** - Secure bcrypt with automatic length handling  
-✅ **Database Models** - User and OTP models with relationships  
-✅ **Request Validation** - Pydantic schemas for type safety  
-✅ **API Documentation** - Auto-generated Swagger/ReDoc  
-✅ **Docker Compose Setup** - Complete multi-service deployment  
-✅ **Database Migrations** - Alembic for schema version control  
-✅ **Environment Configuration** - Flexible settings management  
-✅ **Error Handling** - Comprehensive exception handlers  
-✅ **Provider Locking** - Prevents cross-provider authentication  
-✅ **Celery Monitoring** - Flower UI for task inspection
+✅ Multi-tenant SaaS architecture  
+✅ JWT + OAuth2 authentication  
+✅ Email verification with OTP  
+✅ Organization management  
+✅ Celery background tasks  
+✅ Pause/Resume task control  
+✅ Security middleware stack  
+✅ Repository pattern  
+✅ Password hashing (Argon2/bcrypt)  
+✅ Database models (User, Org, OTP, TaskControl)  
+✅ Request validation (Pydantic)  
+✅ Auto-generated API docs  
+✅ Docker Compose setup  
+✅ Alembic migrations  
+✅ Complete test suite  
+✅ Flower monitoring  
+✅ Organization-aware emails  
+✅ Daily reminders
 
 ---
 
 ## 🚦 Roadmap
 
-### ✅ Completed Features
+### ✅ Completed
 
-- [x] JWT authentication system
-- [x] Email verification with OTP
-- [x] OAuth integration (Google & GitHub)
-- [x] Celery background tasks
-- [x] Docker deployment setup
-- [x] Database migrations (Alembic)
+- [x] Multi-tenant SaaS architecture
+- [x] Organization management
+- [x] JWT authentication
+- [x] Email verification OTP
+- [x] OAuth (Google & GitHub)
+- [x] Celery background jobs
+- [x] Pause/Resume control
+- [x] Docker setup
+- [x] Database migrations
 - [x] Rate limiting
 - [x] Security middleware
-- [x] Provider locking
+- [x] Test suite
+- [x] Welcome/reminder emails
 
-### 🚧 Planned Features
+### 🚧 Planned
 
-- [ ] Password reset functionality
-- [ ] Refresh token mechanism
-- [ ] User profile endpoints (CRUD)
+- [ ] Password reset
+- [ ] Refresh tokens
+- [ ] User profile CRUD
 - [ ] Role-based access control (RBAC)
-- [ ] API versioning (v1, v2)
-- [ ] Comprehensive logging & monitoring
+- [ ] Organization members management
+- [ ] Organization settings
+- [ ] Automated invite emails
+- [ ] API versioning
+- [ ] Logging & monitoring
 - [ ] Two-factor authentication (2FA)
-- [ ] Session management dashboard
-- [ ] Advanced rate limiting (per user)
-- [ ] File upload handling
+- [ ] Session dashboard
+- [ ] Advanced rate limiting (per org)
+- [ ] File uploads
 - [ ] WebSocket support
-- [ ] GraphQL integration
-- [ ] Kubernetes deployment manifests
-- [ ] CI/CD pipeline templates
+- [ ] Kubernetes manifests
+- [ ] CI/CD templates
+- [ ] Usage analytics
 
 ---
 
-## 🛠️ Development & Testing
-
-### Local Development Commands
-
-<details>
-<summary><b>Virtual Environment Setup</b></summary>
-
-```bash
-# Windows
-python -m venv venv
-venv\Scripts\activate
-
-# macOS/Linux
-python3 -m venv venv
-source venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt
-pip install -r requirements-dev.txt  # Include test dependencies
-```
-
-</details>
-
-<details>
-<summary><b>Running the Application</b></summary>
-
-```bash
-# Start FastAPI (with auto-reload)
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-
-# Start with specific host
-uvicorn app.main:app --reload --host 127.0.0.1 --port 8000
-
-# With custom log level
-uvicorn app.main:app --reload --log-level debug
-
-# Production mode (no reload)
-uvicorn app.main:app --host 0.0.0.0 --port 8000 --workers 4
-```
-
-</details>
-
-<details>
-<summary><b>Database Commands</b></summary>
-
-```bash
-# Create database
-createdb fastapi_boilerplate_db
-
-# Access PostgreSQL
-psql -U postgres -d fastapi_boilerplate_db
-
-# Useful SQL commands
-\dt                          # List all tables
-\d users                     # Describe users table
-SELECT * FROM users;         # View all users
-SELECT * FROM otps;          # View all OTPs
-\q                           # Quit
-```
-
-</details>
-
-<details>
-<summary><b>Migration Commands</b></summary>
-
-```bash
-# Generate new migration
-alembic revision --autogenerate -m "add new field"
-
-# Apply migrations
-alembic upgrade head
-
-# Rollback last migration
-alembic downgrade -1
-
-# Rollback all
-alembic downgrade base
-
-# Check current version
-alembic current
-
-# View history
-alembic history --verbose
-```
-
-</details>
-
-<details>
-<summary><b>Celery Commands (Local)</b></summary>
-
-```bash
-# Start Redis
-redis-server
-
-# Email worker (Terminal 1)
-celery -A app.core.celery_app worker \
-  -Q email \
-  --pool=gevent \
-  --concurrency=50 \
-  --loglevel=info
-
-# Cleanup worker (Terminal 2)
-celery -A app.core.celery_app worker \
-  -Q cleanup \
-  --concurrency=1 \
-  --loglevel=info
-
-# Celery Beat scheduler (Terminal 3)
-celery -A app.core.celery_app beat --loglevel=info
-
-# Flower monitoring (Terminal 4)
-celery -A app.core.celery_app flower --port=5555
-
-# Check registered tasks
-celery -A app.core.celery_app inspect registered
-
-# Check active tasks
-celery -A app.core.celery_app inspect active
-```
-
-</details>
-
----
-
-### Testing
-
-<details>
-<summary><b>Manual API Testing</b></summary>
-
-**Using cURL:**
-
-```bash
-# Register user
-curl -X POST "http://localhost:8000/users/register" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "test@example.com",
-    "first_name": "Test",
-    "last_name": "User",
-    "password": "test123"
-  }'
-
-# Login
-curl -X POST "http://localhost:8000/auth/login" \
-  -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "username=test@example.com&password=test123"
-
-# Request verification OTP
-curl -X POST "http://localhost:8000/auth/request-verification" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN"
-
-# Verify OTP
-curl -X POST "http://localhost:8000/auth/verify-otp" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{"otp_code": "123456"}'
-
-# Get current user
-curl -X GET "http://localhost:8000/users/me" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN"
-```
-
-**Using Docker:**
-
-```bash
-# Register (inside container)
-docker exec fastapi_app curl -X POST "http://localhost:8000/users/register" \
-  -H "Content-Type: application/json" \
-  -d '{"email":"test@example.com","first_name":"Test","last_name":"User","password":"test123"}'
-
-# Login (inside container)
-docker exec fastapi_app curl -X POST "http://localhost:8000/auth/login" \
-  -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "username=test@example.com&password=test123"
-```
-
-</details>
-
-<details>
-<summary><b>Unit & Integration Tests</b></summary>
-
-```bash
-# Run all tests
-pytest
-
-# Run with coverage
-pytest --cov=app --cov-report=html
-
-# Run specific test file
-pytest tests/unit/test_auth.py
-
-# Run specific test
-pytest tests/unit/test_auth.py::test_register_user
-
-# Run with verbose output
-pytest -v
-
-# Run and stop on first failure
-pytest -x
-
-# Generate coverage report
-pytest --cov=app --cov-report=term-missing
-```
-
-</details>
-
-<details>
-<summary><b>Load Testing</b></summary>
-
-```bash
-# Install locust
-pip install locust
-
-# Create locustfile.py
-cat > locustfile.py << 'EOF'
-from locust import HttpUser, task, between
-
-class APIUser(HttpUser):
-    wait_time = between(1, 3)
-
-    @task
-    def register(self):
-        self.client.post("/users/register", json={
-            "email": f"user_{self.user_id}@example.com",
-            "first_name": "Test",
-            "last_name": "User",
-            "password": "test123"
-        })
-EOF
-
-# Run load test
-locust -f locustfile.py --host http://localhost:8000
-# Access UI at: http://localhost:8089
-```
-
-</details>
-
----
-
-### Debugging
-
-<details>
-<summary><b>Enable Debug Mode</b></summary>
-
-```python
-# In app/main.py
-import logging
-
-# Set log level
-logging.basicConfig(level=logging.DEBUG)
-
-# Enable FastAPI debug mode
-app = FastAPI(debug=True)
-```
-
-</details>
-
-<details>
-<summary><b>View Logs</b></summary>
-
-```bash
-# Local
-# Logs appear in terminal where uvicorn is running
-
-# Docker - All services
-docker-compose logs -f
-
-# Docker - Specific service
-docker logs -f fastapi_app
-docker logs -f fastapi_celery_worker
-docker logs -f fastapi_db
-
-# Docker - Last 100 lines
-docker logs --tail 100 fastapi_app
-
-# Docker - Since timestamp
-docker logs --since 10m fastapi_app
-```
-
-</details>
-
-<details>
-<summary><b>Database Inspection</b></summary>
-
-```bash
-# Quick database check
-psql -U postgres -d fastapi_boilerplate_db -c "SELECT * FROM users;"
-
-# Interactive session
-psql -U postgres -d fastapi_boilerplate_db
-
-# Docker
-docker exec -it fastapi_db psql -U postgres -d fastapi
-
-# View recent OTPs
-SELECT * FROM otps ORDER BY created_at DESC LIMIT 10;
-
-# Count users
-SELECT COUNT(*) FROM users;
-
-# Check verification status
-SELECT email, is_verified FROM users;
-```
-
-</details>
-
----
-
-### Reset & Cleanup
-
-<details>
-<summary><b>Reset Everything (Local)</b></summary>
-
-```bash
-# Deactivate virtual environment
-deactivate
-
-# Remove virtual environment
-rm -rf venv
-
-# Recreate environment
-python -m venv venv
-source venv/bin/activate  # or venv\Scripts\activate on Windows
-
-# Reinstall dependencies
-pip install -r requirements.txt
-
-# Reset database
-dropdb fastapi_boilerplate_db
-createdb fastapi_boilerplate_db
-alembic upgrade head
-```
-
-</details>
-
-<details>
-<summary><b>Reset Everything (Docker)</b></summary>
-
-```bash
-# Stop and remove everything
-docker-compose down -v
-
-# Remove all Docker artifacts
-docker system prune -a
-
-# Rebuild from scratch
-docker-compose up -d --build
-
-# Run migrations
-docker exec -it fastapi_app alembic upgrade head
-```
-
-</details>
+## 📊 Statistics
+
+| Metric                | Count   |
+| --------------------- | ------- |
+| **Lines of Code**     | ~8,000+ |
+| **API Endpoints**     | 20+     |
+| **Database Tables**   | 5+      |
+| **Middleware**        | 5+      |
+| **Docker Services**   | 8       |
+| **Celery Queues**     | 2       |
+| **Background Tasks**  | 4+      |
+| **Security Features** | 10+     |
+| **Test Coverage**     | 85%+    |
+| **Test Files**        | 8+      |
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please follow these steps:
+Contributions welcome! Steps:
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+1. Fork repository
+2. Create feature branch: `git checkout -b feature/Amazing`
+3. Commit changes: `git commit -m 'Add Amazing'`
+4. Push: `git push origin feature/Amazing`
+5. Open Pull Request
 
 ---
 
 ## 📄 License
 
-This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
-
----
-
-## 📊 Project Statistics
-
-<div align="center">
-
-| Metric                | Count                                                      |
-| --------------------- | ---------------------------------------------------------- |
-| **Lines of Code**     | ~4,500+                                                    |
-| **API Endpoints**     | 12+                                                        |
-| **Database Tables**   | 3 (users, otps, alembic_version)                           |
-| **Middleware**        | 5 (CORS, Rate Limit, SQL Injection, Session, Logging)      |
-| **Docker Services**   | 8 (FastAPI, PostgreSQL, Redis, 3× Celery, Flower, pgAdmin) |
-| **Celery Workers**    | 3 queues (email, cleanup, default)                         |
-| **Background Tasks**  | 3+ (Email OTP, Cleanup, Webhooks)                          |
-| **Security Features** | 7+ (JWT, Rate Limiting, SQL Injection, CORS, bcrypt, etc.) |
-| **Test Coverage**     | 85%+                                                       |
-
-</div>
-
----
-
-## 💬 Support
-
-If you encounter any issues or have questions:
-
-1. Check the [Common Issues](#-common-issues--solutions) section
-2. Search existing [GitHub Issues](https://github.com/yourusername/fastapi-boilerplate/issues)
-3. Create a new issue with detailed information
+MIT License - See [LICENSE](LICENSE) file
 
 ---
 
 ## 🙏 Acknowledgments
 
-- [FastAPI](https://fastapi.tiangolo.com/) - Modern web framework
-- [SQLAlchemy](https://www.sqlalchemy.org/) - SQL toolkit
-- [Pydantic](https://pydantic-docs.helpmanual.io/) - Data validation
-- [Authlib](https://authlib.org/) - OAuth integration
-- [Python-JOSE](https://python-jose.readthedocs.io/) - JWT handling
+- [FastAPI](https://fastapi.tiangolo.com/) - Web framework
+- [SQLAlchemy](https://www.sqlalchemy.org/) - ORM
+- [Pydantic](https://pydantic-docs.helpmanual.io/) - Validation
+- [Authlib](https://authlib.org/) - OAuth
+- [Python-JOSE](https://python-jose.readthedocs.io/) - JWT
+- [Celery](https://docs.celeryq.dev/) - Task queue
+- [Redis](https://redis.io/) - Cache/broker
+- [Pytest](https://pytest.org/) - Testing
 
 ---
 
@@ -2433,8 +1050,8 @@ If you encounter any issues or have questions:
 
 ### ⭐ Star this repository if you find it helpful!
 
-**Built with ❤️ using FastAPI**
+**Built with ❤️ for SaaS Applications**
 
-[Report Bug](https://github.com/yourusername/fastapi-boilerplate/issues) · [Request Feature](https://github.com/yourusername/fastapi-boilerplate/issues)
+[Report Bug](https://github.com/yourusername/fastapi-saas-boilerplate/issues) • [Request Feature](https://github.com/yourusername/fastapi-saas-boilerplate/issues)
 
 </div>

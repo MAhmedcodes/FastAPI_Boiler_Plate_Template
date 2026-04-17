@@ -3,6 +3,8 @@
 from app.core.celery.celery_app import celery_app
 from app.core.celery.tasks.cleanup_tasks import full_cleanup_task
 from celery.result import AsyncResult
+from app.core.database.database import Sessionlocal
+from app.modules.jobs.repository.job_repository import TaskControlRepository
 
 
 class JobControlService:
@@ -136,3 +138,81 @@ class JobControlService:
             workers.append(worker_info)
 
         return {"workers": workers, "count": len(workers)}
+
+# Add these methods to JobControlService class
+
+    @staticmethod
+    def pause_task(task_name: str):
+        """
+        Pause a specific task type (welcome_email, reminder_email, cleanup)
+        Paused tasks will not execute even if triggered
+        """
+        available_tasks = ["welcome_email", "reminder_email", "cleanup"]
+
+        if task_name not in available_tasks:
+            return {
+                "error": True,
+                "message": f"Invalid task name. Available: {', '.join(available_tasks)}"
+            }
+
+        db = Sessionlocal()
+        try:
+            repo = TaskControlRepository(db)
+            task_control = repo.create_or_update(task_name, is_paused=True)
+
+            return {
+                "task_name": task_name,
+                "is_paused": True,
+                "paused_at": task_control.paused_at,
+                "message": f"Task '{task_name}' has been paused"
+            }
+        finally:
+            db.close()
+
+    @staticmethod
+    def resume_task(task_name: str):
+        """
+        Resume a paused task
+        """
+        available_tasks = ["welcome_email", "reminder_email", "cleanup"]
+
+        if task_name not in available_tasks:
+            return {
+                "error": True,
+                "message": f"Invalid task name. Available: {', '.join(available_tasks)}"
+            }
+
+        db = Sessionlocal()
+        try:
+            repo = TaskControlRepository(db)
+            task_control = repo.create_or_update(task_name, is_paused=False)
+
+            return {
+                "task_name": task_name,
+                "is_paused": False,
+                "message": f"Task '{task_name}' has been resumed"
+            }
+        finally:
+            db.close()
+
+    @staticmethod
+    def get_paused_tasks():
+        """
+        Get all paused tasks status
+        """
+        db = Sessionlocal()
+        try:
+            repo = TaskControlRepository(db)
+            all_controls = repo.get_all()
+
+            result = []
+            for control in all_controls:
+                result.append({
+                    "task_name": control.task_name,
+                    "is_paused": control.is_paused,
+                    "paused_at": control.paused_at
+                })
+
+            return {"tasks": result, "count": len(result)}
+        finally:
+            db.close()

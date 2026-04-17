@@ -4,6 +4,8 @@ from app.core.celery.celery_app import celery_app
 from redis import Redis
 from app.core.config.config import settings
 from datetime import datetime, timedelta, timezone
+from app.core.database.database import Sessionlocal
+from app.modules.jobs.repository.job_repository import TaskControlRepository
 
 
 @celery_app.task(name="cleanup_expired_task_metadata", queue="maintenance_queue")
@@ -84,15 +86,25 @@ def full_cleanup_task():
     Runs every 15 days via Celery Beat
     NOTE: Do NOT use .get() inside tasks - celery will handle chaining
     """
-    print("[CLEANUP TASK] Starting full cleanup...")
+    db = Sessionlocal()
+    try:
+        # Check if task is paused
+        task_control_repo = TaskControlRepository(db)
+        if task_control_repo.is_paused("cleanup"):
+            print(f"[CLEANUP TASK] Task is paused. No cleanup performed.")
+            return {"status": "paused", "message": "Task is paused"}
 
-    # Run cleanup tasks asynchronously (don't wait)
-    cleanup_expired_task_metadata.delay()  # type: ignore
-    cleanup_stale_queue_messages.delay()  # type: ignore
+        print("[CLEANUP TASK] Starting full cleanup...")
 
-    print("[CLEANUP TASK] Full cleanup tasks dispatched")
+        # Run cleanup tasks asynchronously (don't wait)
+        cleanup_expired_task_metadata.delay()  # type: ignore
+        cleanup_stale_queue_messages.delay()  # type: ignore
 
-    return {
-        "status": "dispatched",
-        "completed_at": datetime.now(timezone.utc).isoformat()
-    }
+        print("[CLEANUP TASK] Full cleanup tasks dispatched")
+
+        return {
+            "status": "dispatched",
+            "completed_at": datetime.now(timezone.utc).isoformat()
+        }
+    finally:
+        db.close()
