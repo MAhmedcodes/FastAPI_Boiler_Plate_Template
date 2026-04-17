@@ -2,6 +2,7 @@ from fastapi import FastAPI, Request
 
 from app.core.config.config import settings
 from app.modules.Auth.router import oauth, oauth2, verification
+from app.modules.Organizations.router import organization
 from app.modules.Users.router import user
 from app.modules.jobs.router import jobs
 from app.core.middleware.security_layer import setup_security, limiter
@@ -35,6 +36,8 @@ app.include_router(oauth2.router)
 app.include_router(user.router)
 app.include_router(verification.router)
 app.include_router(jobs.router)
+app.include_router(organization.router)
+
 
 @app.get("/")
 @limiter.limit("5/minute")  # Rate limit for root endpoint
