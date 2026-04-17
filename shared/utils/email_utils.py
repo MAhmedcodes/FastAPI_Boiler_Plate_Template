@@ -8,11 +8,29 @@ from pathlib import Path
 
 def render_template(template_name: str, variables: dict):
     """Render HTML template with variables"""
-    template_path = Path(f"templates/emails/{template_name}")
+
+    path = Path(template_name)
+
+    # CASE 1: full path passed (tests / temp files)
+    if path.exists():
+        template_path = path
+
+    # CASE 2: just filename (production templates)
+    else:
+        template_path = Path("templates/emails") / template_name
+
+        # fallback safety check
+        if not template_path.exists():
+            raise FileNotFoundError(
+                f"Template not found: {template_name}"
+            )
+
     with open(template_path, "r", encoding="utf-8") as f:
         content = f.read()
+
     for key, value in variables.items():
         content = content.replace(f"{{{{ {key} }}}}", str(value))
+
     return content
 
 

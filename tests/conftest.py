@@ -2,45 +2,50 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+
 from app.core.database.database import Base
 from app.core.dependencies.dependencies import get_db
-from main import app
+from app.main import app
 
-# Use Docker service name, not localhost
+# Docker service name (IMPORTANT)
 SQLALCHEMY_DATABASE_URL = "postgresql://postgres:postgres@postgres:5432/fastapi_test"
 
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
+engine = create_engine(SQLALCHEMY_DATABASE_URL, pool_pre_ping=True)
+
 TestingSessionLocal = sessionmaker(
-    autocommit=False, autoflush=False, bind=engine)
+    autocommit=False,
+    autoflush=False,
+    bind=engine
+)
 
 
+# -------------------------
+# DATABASE LIFECYCLE
+# -------------------------
 @pytest.fixture(scope="session", autouse=True)
-def setup_default_organization():
-    """Create default organization in test database"""
-    from sqlalchemy import text
-    with engine.connect() as conn:
-        conn.execute(text(
-            "INSERT INTO organizations (name, invite_token) VALUES ('default', 'default') ON CONFLICT (name) DO NOTHING"
-        ))
-        conn.commit()
+def setup_database():
+    Base.metadata.create_all(bind=engine)
+    yield
+    Base.metadata.drop_all(bind=engine)
 
 
 @pytest.fixture(scope="function")
 def db_session():
-    # Create all tables in test database
-    Base.metadata.create_all(bind=engine)
+    connection = engine.connect()
+    transaction = connection.begin()
 
-    db = TestingSessionLocal()
-    try:
-        yield db
-    finally:
-        db.rollback()
-        db.close()
+    session = TestingSessionLocal(bind=connection)
 
-    # Cleanup after test
-    Base.metadata.drop_all(bind=engine)
+    yield session
+
+    session.close()
+    transaction.rollback()
+    connection.close()
 
 
+# -------------------------
+# FASTAPI CLIENT (OVERRIDE DB)
+# -------------------------
 @pytest.fixture(scope="function")
 def client(db_session):
     def override_get_db():
@@ -50,40 +55,41 @@ def client(db_session):
             pass
 
     app.dependency_overrides[get_db] = override_get_db
-    yield TestClient(app)
+
+    with TestClient(app) as c:
+        yield c
+
     app.dependency_overrides.clear()
 
 
+# -------------------------
+# AUTH FIXTURE (SAFE UNIQUE DATA)
+# -------------------------
 @pytest.fixture
 def auth_token(client):
-    # Create org
-    org_response = client.post(
-        "/organizations/create", json={"name": "Test Org"})
-    if org_response.status_code != 200:
-        pytest.skip(f"Failed to create org: {org_response.text}")
+    import uuid
 
-    org_data = org_response.json()
-    invite_token = org_data["invite_token"]
-    org_id = org_data["id"]
+    email = f"user_{uuid.uuid4()}@test.com"
+    org_name = f"org_{uuid.uuid4()}"
 
-    # Register user
-    register_response = client.post("/users/register", json={
-        "email": "test@example.com",
+    org = client.post("/organizations/create", json={"name": org_name})
+    assert org.status_code == 200
+    org_data = org.json()
+
+    register = client.post("/users/register", json={
+        "email": email,
         "first_name": "Test",
         "last_name": "User",
         "password": "test123",
-        "invite_token": invite_token
+        "invite_token": org_data["invite_token"]
     })
-    if register_response.status_code != 200:
-        pytest.skip(f"Failed to register: {register_response.text}")
+    assert register.status_code == 200
 
-    # Login
-    response = client.post("/auth/login", data={
-        "username": "test@example.com",
+    login = client.post("/auth/login", data={
+        "username": email,
         "password": "test123",
-        "organization_id": org_id
+        "organization_id": org_data["id"]
     })
-    if response.status_code != 200:
-        pytest.skip(f"Failed to login: {response.text}")
+    assert login.status_code == 200
 
-    return response.json()["access_token"]
+    return login.json()["access_token"]

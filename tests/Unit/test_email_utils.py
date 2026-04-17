@@ -1,24 +1,20 @@
-import pytest
 from shared.utils.email_utils import render_template
+import tempfile
 
 
 class TestEmailUtils:
 
     def test_render_template_replaces_variables(self):
-        # Create a mock template
-        import tempfile
-        import os
+        content = "Hello {{ name }}, welcome to {{ org }}"
 
-        template_content = "Hello {{ name }}, welcome to {{ org }}"
-        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.html') as f:
-            f.write(template_content)
-            template_path = f.name
+        with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".html") as f:
+            f.write(content)
+            path = f.name
 
-        # Mock the path
-        original_path = 'shared.utils.email_utils.Path'
+        result = render_template(path, {
+            "name": "John",
+            "org": "Test Org"
+        })
 
-        variables = {"name": "John", "org": "Test Gym"}
-
-        # Test rendering
-        # Note: You'll need to mock Path for this test
-        pass
+        assert "John" in result
+        assert "Test Org" in result

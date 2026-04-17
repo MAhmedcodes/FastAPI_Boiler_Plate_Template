@@ -1,23 +1,20 @@
-import pytest
 from app.core.security.OAuth2 import oauth2
-from app.core.config.config import settings
+from fastapi import HTTPException
 
 
 class TestJWT:
 
     def test_create_access_token(self):
-        data = {"id": 1, "org_id": 1}
-        token = oauth2.create_access_token(data)
-        assert token is not None
+        token = oauth2.create_access_token({"id": 1, "org_id": 1})
         assert isinstance(token, str)
+        assert token is not None
 
     def test_verify_valid_token(self):
-        data = {"id": 1, "org_id": 1}
-        token = oauth2.create_access_token(data)
+        token = oauth2.create_access_token({"id": 1, "org_id": 1})
 
-        from fastapi import HTTPException
         exception = HTTPException(status_code=401, detail="Invalid token")
 
-        result = oauth2.verify_token(token, exception)
-        assert result.id == 1
-        assert result.organization_id == 1
+        user = oauth2.verify_token(token, exception)
+
+        assert user.id == 1
+        assert user.organization_id == 1

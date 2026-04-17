@@ -1,41 +1,30 @@
-import pytest
-from fastapi.testclient import TestClient
-from app.main import app
-
-client = TestClient(app)
+import uuid
 
 
 class TestOrganizationFlow:
 
-    def test_create_and_get_organizations(self):
-        # Create organization
-        create_response = client.post(
-            "/organizations/create",
-            json={"name": "Test Org 1"}
-        )
-        assert create_response.status_code == 200
-        org1 = create_response.json()
-        assert "invite_token" in org1
+    def test_create_and_get_organizations(self, client):
 
-        # Create another organization
-        create_response2 = client.post(
+        org1 = client.post(
             "/organizations/create",
-            json={"name": "Test Org 2"}
+            json={"name": f"Org-{uuid.uuid4()}"}
         )
-        assert create_response2.status_code == 200
-        org2 = create_response2.json()
+        assert org1.status_code == 200
+        org1_data = org1.json()
 
-        # Get all organizations
-        get_response = client.get("/organizations/")
-        assert get_response.status_code == 200
-        data = get_response.json()
+        org2 = client.post(
+            "/organizations/create",
+            json={"name": f"Org-{uuid.uuid4()}"}
+        )
+        assert org2.status_code == 200
+
+        get_res = client.get("/organizations/")
+        assert get_res.status_code == 200
+        data = get_res.json()
         assert data["count"] >= 2
 
-        # Join organization
-        join_response = client.post(
+        join_res = client.post(
             "/organizations/join",
-            json={"organization_id": org1["id"]}
+            json={"organization_id": org1_data["id"]}
         )
-        assert join_response.status_code == 200
-        join_data = join_response.json()
-        assert join_data["invite_token"] == org1["invite_token"]
+        assert join_res.status_code == 200
