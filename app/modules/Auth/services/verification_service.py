@@ -79,6 +79,14 @@ class VerificationService:
 
         # Mark user as verified
         user_repo.verify_user(user_id)
-        send_welcome_email_task.delay(user.email, user.first_name)  # type: ignore
+
+        # Get organization name for welcome email
+        org = user_repo.get_organization_by_id(
+            user.organization_id)  # type: ignore
+        organization_name = org.name if org else "Our Platform"
+
+        # Trigger welcome email with organization name
+        send_welcome_email_task.delay(  # type: ignore
+            user.email, user.first_name, organization_name)  # type: ignore
 
         return {"message": "User verified successfully"}
