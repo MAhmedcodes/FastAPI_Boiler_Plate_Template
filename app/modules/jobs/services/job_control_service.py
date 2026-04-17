@@ -5,13 +5,13 @@ from app.core.celery.tasks.cleanup_tasks import full_cleanup_task
 from celery.result import AsyncResult
 from app.core.database.database import Sessionlocal
 from app.modules.jobs.repository.job_repository import TaskControlRepository
+from shared.constants.constants import available_tasks
 
 
 class JobControlService:
 
     @staticmethod
     def trigger_cleanup_job():
-        """Manually trigger the cleanup job"""
         task = full_cleanup_task.delay()  # type: ignore
         return {
             "task_id": task.id,
@@ -147,7 +147,6 @@ class JobControlService:
         Pause a specific task type (welcome_email, reminder_email, cleanup)
         Paused tasks will not execute even if triggered
         """
-        available_tasks = ["welcome_email", "reminder_email", "cleanup"]
 
         if task_name not in available_tasks:
             return {
@@ -171,10 +170,6 @@ class JobControlService:
 
     @staticmethod
     def resume_task(task_name: str):
-        """
-        Resume a paused task
-        """
-        available_tasks = ["welcome_email", "reminder_email", "cleanup"]
 
         if task_name not in available_tasks:
             return {
@@ -197,9 +192,7 @@ class JobControlService:
 
     @staticmethod
     def get_paused_tasks():
-        """
-        Get all paused tasks status
-        """
+
         db = Sessionlocal()
         try:
             repo = TaskControlRepository(db)
