@@ -1,5 +1,4 @@
 FROM python:3.11-slim
-#slim means small in size
 
 WORKDIR /app
 
@@ -9,15 +8,18 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy requirements
+# Copy requirements first for better caching
 COPY requirements.txt .
 
-# Install dependencies (including celery for workers only)
+# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy project
+# Copy the entire backend code
 COPY . .
 
 # Create non-root user
 RUN useradd -m -u 1000 appuser && chown -R appuser:appuser /app
 USER appuser
+
+# Default command (can be overridden by docker-compose)
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
