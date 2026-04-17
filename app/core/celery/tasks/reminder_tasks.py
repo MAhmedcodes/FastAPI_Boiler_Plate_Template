@@ -3,6 +3,7 @@ from app.core.database.database import Sessionlocal
 from app.modules.Users.repository.user_repository import UserRepository
 from shared.utils.email_utils import send_inactive_reminder_email
 from datetime import datetime, timezone
+from app.modules.jobs.repository.job_repository import TaskControlRepository
 
 
 @celery_app.task(name="send_inactive_reminder_task", queue="email_queue")
@@ -13,6 +14,12 @@ def send_inactive_reminder_task(days_threshold: int = 5):
     """
     db = Sessionlocal()
     try:
+        # Check if task is paused
+        task_control_repo = TaskControlRepository(db)
+        if task_control_repo.is_paused("reminder_email"):
+            print(f"[REMINDER TASK] Task is paused. No reminders sent.")
+            return {"status": "paused", "message": "Task is paused"}
+
         user_repo = UserRepository(db)
 
         # Get users inactive for X days

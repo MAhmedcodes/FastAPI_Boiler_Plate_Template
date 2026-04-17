@@ -6,7 +6,8 @@ from app.modules.jobs.schema.schema import (
     TaskStatusResponse,
     ActiveTasksResponse,
     WorkersResponse,
-    TaskRevokeRequest
+    TaskRevokeRequest,
+    TaskNameRequest
 )
 
 router = APIRouter(prefix="/jobs", tags=["Job Control"])
@@ -95,3 +96,33 @@ async def get_workers():
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to get workers: {str(e)}"
         )
+
+
+@router.post("/pause")
+def pause_task(request: TaskNameRequest):
+    """
+    Pause a task (welcome_email, reminder_email, or cleanup)
+    """
+    result = JobControlService.pause_task(request.task_name)
+    if result.get("error"):
+        raise HTTPException(status_code=400, detail=result["message"])
+    return result
+
+
+@router.post("/resume")
+def resume_task(request: TaskNameRequest):
+    """
+    Resume a paused task
+    """
+    result = JobControlService.resume_task(request.task_name)
+    if result.get("error"):
+        raise HTTPException(status_code=400, detail=result["message"])
+    return result
+
+
+@router.get("/paused")
+def get_paused_tasks():
+    """
+    Get all paused tasks
+    """
+    return JobControlService.get_paused_tasks()

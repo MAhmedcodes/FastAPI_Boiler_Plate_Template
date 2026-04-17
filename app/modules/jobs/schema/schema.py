@@ -38,3 +38,7 @@ class ActiveTasksResponse(BaseModel):
 class WorkersResponse(BaseModel):
     workers: List[dict]
     count: int
+
+
+class TaskNameRequest(BaseModel):
+    task_name: str

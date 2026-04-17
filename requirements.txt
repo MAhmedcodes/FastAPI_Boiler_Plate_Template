@@ -51,3 +51,6 @@ celery==5.3.4
 redis==5.0.1
 flower==2.0.1
 gevent==24.2.1
+pytest==7.4.3
+pytest-cov==4.1.0
+httpx==0.25.0
