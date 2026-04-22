@@ -20,7 +20,8 @@ def setup_security(app: FastAPI):
     app.add_middleware(
         CORSMiddleware,
         # Update with your frontend URLs
-        allow_origins=["http://localhost:3000", "any other url we need"],
+        allow_origins=["http://localhost:3000",
+                       "http://http://13.53.39.27/", "any other url we need"],
         allow_credentials=True,
         allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
         allow_headers=["*"],
